@@ -1,13 +1,13 @@
 ﻿namespace Schema.NET
 {
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System.Text.Json.Serialization;
+
 
     /// <summary>
     /// Categories of medical devices, organized by the purpose or intended use of the device.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum MedicalDevicePurpose
     {
         /// <summary>

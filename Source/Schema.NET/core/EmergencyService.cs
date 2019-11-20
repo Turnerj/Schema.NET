@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// An emergency service, such as a fire station or ER.

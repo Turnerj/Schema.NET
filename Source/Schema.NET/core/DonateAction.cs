@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// The act of providing goods, services, or money without compensation, often for philanthropic reasons.

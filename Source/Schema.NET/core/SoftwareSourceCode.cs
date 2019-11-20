@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Computer programming source code. Example: Full (compile ready) solutions, code snippet samples, scripts, templates.

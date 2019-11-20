@@ -2,7 +2,7 @@ namespace Schema.NET
 {
     using System;
     using System.Xml;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Converts an <see cref="IValues"/> object to JSON. If the <see cref="IValues"/> contains a

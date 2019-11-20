@@ -1,8 +1,8 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A reservation to dine at a food-related business.&lt;br/&gt;&lt;br/&gt;

@@ -3,7 +3,7 @@ namespace Schema.NET.Test
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Xunit;
 
     public class ItemListTest

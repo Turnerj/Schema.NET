@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Xunit;
 
     // https://developers.google.com/search/docs/data-types/products

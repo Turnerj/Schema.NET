@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A component of the human body circulatory system comprised of an intricate network of hollow tubes that transport blood throughout the entire body.

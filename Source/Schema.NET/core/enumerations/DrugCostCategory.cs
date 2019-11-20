@@ -1,13 +1,13 @@
 ﻿namespace Schema.NET
 {
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System.Text.Json.Serialization;
+
 
     /// <summary>
     /// Enumerated categories of medical drug costs.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DrugCostCategory
     {
         /// <summary>

@@ -1,7 +1,7 @@
 namespace Schema.NET
 {
     using System;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Newtonsoft.Json.Linq;
 
     /// <summary>

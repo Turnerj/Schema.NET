@@ -2,7 +2,7 @@ namespace Schema.NET
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// The most generic type of item.

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Any feature associated or not with a medical condition. In medicine a symptom is generally subjective while a sign is objective.

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A service for a vehicle for hire with a driver for local travel. Fares are usually calculated based on distance traveled.

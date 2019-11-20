@@ -23,7 +23,7 @@ namespace Schema.NET.Tool.ViewModels
 
             // Using statements
             stringBuilder.AppendIndentLine(4, "using System.Runtime.Serialization;");
-            stringBuilder.AppendIndentLine(4, "using Newtonsoft.Json;");
+            stringBuilder.AppendIndentLine(4, "using System.Text.Json.Serialization;");
             stringBuilder.AppendIndentLine(4, "using Newtonsoft.Json.Converters;");
             stringBuilder.AppendLine();
 
@@ -33,7 +33,7 @@ namespace Schema.NET.Tool.ViewModels
             stringBuilder.AppendIndentLine(4, "/// </summary>");
 
             // Enum
-            stringBuilder.AppendIndentLine(4, $"[JsonConverter(typeof(StringEnumConverter))]");
+            stringBuilder.AppendIndentLine(4, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
             stringBuilder.AppendIndentLine(4, $"public enum {this.Name}");
             stringBuilder.AppendIndentLine(4, "{");
 

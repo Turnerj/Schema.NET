@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A motorized bicycle is a bicycle with an attached motor used to power the vehicle, or to assist with pedaling.

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// An agent joins an event/group with participants/friends at a location.&lt;br/&gt;&lt;br/&gt;

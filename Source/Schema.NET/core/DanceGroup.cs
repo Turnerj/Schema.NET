@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A dance group&amp;#x2014;for example, the Alvin Ailey Dance Theater or Riverdance.

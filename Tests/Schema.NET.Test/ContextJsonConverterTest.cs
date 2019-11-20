@@ -1,6 +1,6 @@
 namespace Schema.NET.Test
 {
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Xunit;
 
     public class ContextJsonConverterTest

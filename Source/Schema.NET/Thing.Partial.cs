@@ -2,8 +2,8 @@ namespace Schema.NET
 {
     using System.Collections.Generic;
     using System.Text;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System.Text.Json.Serialization;
+
 
     public partial class Thing : JsonLdObject
     {

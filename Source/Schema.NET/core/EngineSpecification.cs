@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Information about the engine of the vehicle. A vehicle can have multiple engines represented by multiple engine specification entities.

@@ -3,7 +3,7 @@ namespace Schema.NET.Tool.Repositories
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Newtonsoft.Json.Linq;
     using Schema.NET.Tool.Constants;
     using Schema.NET.Tool.Models;

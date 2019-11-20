@@ -3,7 +3,7 @@ namespace Schema.NET.Test
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using Newtonsoft.Json.Serialization;
 
     public static class TestDefaults

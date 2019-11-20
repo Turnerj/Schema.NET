@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A product or service offered by a bank whereby one may deposit, withdraw or transfer money and in some cases be paid interest.

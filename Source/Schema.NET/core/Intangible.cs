@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// A utility class that serves as the umbrella for a number of 'intangible' things such as quantities, structured values, etc.
