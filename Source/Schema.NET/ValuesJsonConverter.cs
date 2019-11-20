@@ -18,6 +18,9 @@ namespace Schema.NET
     {
         private const string NamespacePrefix = "Schema.NET.";
 
+        /// <inheritdoc />
+        public override bool CanConvert(Type typeToConvert) => typeof(IValues).IsAssignableFrom(typeToConvert);
+
         /// <summary>
         /// Reads the JSON representation of the object.
         /// </summary>
