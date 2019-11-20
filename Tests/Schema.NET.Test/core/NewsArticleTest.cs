@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class NewsArticleTest
@@ -73,8 +73,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_NewsArticleJsonLd_ReturnsNewsArticle()
         {
-            Assert.Equal(this.article.ToString(), JsonConvert.DeserializeObject<NewsArticle>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.article, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<NewsArticle>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.article.ToString(), JsonSerializer.Deserialize<NewsArticle>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.article, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<NewsArticle>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

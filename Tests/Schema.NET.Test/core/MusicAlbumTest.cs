@@ -2,7 +2,7 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class MusicAlbumTest
@@ -104,8 +104,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_MusicAlbumJsonLd_ReturnsMusicAlbum()
         {
-            Assert.Equal(this.musicAlbum.ToString(), JsonConvert.DeserializeObject<MusicAlbum>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.musicAlbum, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<MusicAlbum>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.musicAlbum.ToString(), JsonSerializer.Deserialize<MusicAlbum>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.musicAlbum, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<MusicAlbum>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

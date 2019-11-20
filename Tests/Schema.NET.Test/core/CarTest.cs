@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class CarTest
@@ -67,8 +67,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_CarJsonLd_ReturnsCar()
         {
-            Assert.Equal(this.car.ToString(), JsonConvert.DeserializeObject<Car>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.car, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Car>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.car.ToString(), JsonSerializer.Deserialize<Car>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.car, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<Car>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

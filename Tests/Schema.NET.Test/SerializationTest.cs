@@ -2,8 +2,8 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
-
     using Xunit;
 
     // https://developers.google.com/search/docs/data-types/books
@@ -53,17 +53,18 @@ namespace Schema.NET.Test
             Author = Person
         };
 
-        private readonly JsonSerializerSettings customSerializerSettings = new JsonSerializerSettings()
+        private readonly JsonSerializerOptions customSerializerSettings;
+
+        public SerializationTest()
         {
-            Converters = new List<JsonConverter>()
+            this.customSerializerSettings = new JsonSerializerOptions()
             {
-                new StringEnumConverter()
-            },
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-            StringEscapeHandling = StringEscapeHandling.EscapeHtml,
-            Formatting = Formatting.Indented
-        };
+                IgnoreNullValues = true,
+                WriteIndented = true
+            };
+
+            this.customSerializerSettings.Converters.Add(new JsonStringEnumConverter());
+        }
 
         [Fact]
         public void ToString_UnsafeBookData_ReturnsExpectedJsonLd() =>
@@ -71,7 +72,9 @@ namespace Schema.NET.Test
 
         [Fact]
         public void ToHtmlEscapedString_UnsafeBookData_ReturnsExpectedJsonLd() =>
+#pragma warning disable CS0618 // Type or member is obsolete
             Assert.Equal(JsonHtmlEscaped, this.book.ToHtmlEscapedString());
+#pragma warning restore CS0618 // Type or member is obsolete
 
         [Fact]
         public void ToStringWithCustomSerializerSettings_UnsafeAuthorData_ReturnsExpectedJsonLd() =>

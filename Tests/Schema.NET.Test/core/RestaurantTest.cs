@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     // https://developers.google.com/search/docs/data-types/local-businesses
@@ -124,8 +124,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_RestaurantJsonLd_ReturnsRestaurant()
         {
-            Assert.Equal(this.restaurant.ToString(), JsonConvert.DeserializeObject<Restaurant>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.restaurant, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Restaurant>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.restaurant.ToString(), JsonSerializer.Deserialize<Restaurant>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.restaurant, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<Restaurant>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

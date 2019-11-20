@@ -3,7 +3,7 @@ namespace Schema.NET.Test
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class BreadcrumbListTest
@@ -70,14 +70,14 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_BreadcrumbListJsonLd_ReturnsMatchingBreadcrumbList()
         {
-            Assert.Equal(this.breadcrumbList.ToString(), JsonConvert.DeserializeObject<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.breadcrumbList, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.breadcrumbList.ToString(), JsonSerializer.Deserialize<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.breadcrumbList, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
 
         [Fact]
         public void Deserializing_BreadcrumbListJsonLd_ReturnsBreadcrumbList()
         {
-            var breadcrumbList = JsonConvert.DeserializeObject<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings);
+            var breadcrumbList = JsonSerializer.Deserialize<BreadcrumbList>(this.json, TestDefaults.DefaultJsonSerializerSettings);
 
             List<IThing> things = breadcrumbList.ItemListElement;
             List<IListItem> listItems = breadcrumbList.ItemListElement;

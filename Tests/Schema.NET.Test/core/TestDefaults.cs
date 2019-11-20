@@ -3,20 +3,14 @@ namespace Schema.NET.Test
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using System.Text.Json.Serialization;
-    using Newtonsoft.Json.Serialization;
+    using System.Text.Json;
 
     public static class TestDefaults
     {
-        public static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
+        public static readonly JsonSerializerOptions DefaultJsonSerializerSettings = new JsonSerializerOptions()
         {
-            Formatting = Formatting.None,
-            DateParseHandling = DateParseHandling.DateTimeOffset,
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-            TypeNameHandling = TypeNameHandling.None,
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IgnoreNullValues = true
         };
     }
 }

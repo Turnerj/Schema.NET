@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class ThingTest
@@ -27,6 +27,6 @@ namespace Schema.NET.Test
         public void Deserializing_NewObjectJsonLd_ReturnsThing() =>
             Assert.Equal(
                 this.thing.ToString(),
-                JsonConvert.DeserializeObject<Thing>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+                JsonSerializer.Deserialize<Thing>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
     }
 }

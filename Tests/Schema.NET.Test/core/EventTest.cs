@@ -2,7 +2,7 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     // https://developers.google.com/search/docs/data-types/events
@@ -108,8 +108,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_EventJsonLd_ReturnsEvent()
         {
-            Assert.Equal(this.@event.ToString(), JsonConvert.DeserializeObject<Event>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.@event, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Event>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.@event.ToString(), JsonSerializer.Deserialize<Event>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.@event, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<Event>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

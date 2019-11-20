@@ -2,7 +2,7 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class MusicVenueTest
@@ -76,8 +76,8 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_MusicVenueJsonLd_ReturnsMusicVenue()
         {
-            Assert.Equal(this.musicVenue.ToString(), JsonConvert.DeserializeObject<MusicVenue>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.musicVenue, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<MusicVenue>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.musicVenue.ToString(), JsonSerializer.Deserialize<MusicVenue>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.musicVenue, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<MusicVenue>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
     }
 }

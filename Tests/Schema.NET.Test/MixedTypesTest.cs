@@ -2,7 +2,7 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     public class MixedTypesTest
@@ -44,7 +44,7 @@ namespace Schema.NET.Test
         [Fact]
         public void DeserializeObject_WithCollectionOfMixedTypes_ReturnsObjectWithBothTypes()
         {
-            var book = JsonConvert.DeserializeObject<Book>(this.json, TestDefaults.DefaultJsonSerializerSettings);
+            var book = JsonSerializer.Deserialize<Book>(this.json, TestDefaults.DefaultJsonSerializerSettings);
 
             Assert.True(book.Author.HasValue);
             Assert.True(book.Author.HasValue1);
@@ -77,7 +77,7 @@ namespace Schema.NET.Test
                     "]" +
                 "}";
 
-            var bankAccount = JsonConvert.DeserializeObject<BankAccount>(json, TestDefaults.DefaultJsonSerializerSettings);
+            var bankAccount = JsonSerializer.Deserialize<BankAccount>(json, TestDefaults.DefaultJsonSerializerSettings);
 
             Assert.True(bankAccount.BankAccountType.HasValue);
             Assert.Equal(
