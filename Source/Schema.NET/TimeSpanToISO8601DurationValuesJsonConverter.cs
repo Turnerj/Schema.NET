@@ -1,8 +1,9 @@
 namespace Schema.NET
 {
     using System;
-    using System.Xml;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
+    using System.Xml;
 
     /// <summary>
     /// Converts an <see cref="IValues"/> object to JSON. If the <see cref="IValues"/> contains a
@@ -13,24 +14,19 @@ namespace Schema.NET
     public class TimeSpanToISO8601DurationValuesJsonConverter : ValuesJsonConverter
     {
         /// <inheritdoc />
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override IValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader is null)
+            if (typeToConvert is null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(typeToConvert));
             }
 
-            if (objectType is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(objectType));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            var valuesType = objectType.GetUnderlyingTypeFromNullable();
+            var valuesType = typeToConvert.GetUnderlyingTypeFromNullable();
             if (valuesType != null && valuesType.GenericTypeArguments.Length == 1)
             {
                 var mainType = valuesType.GenericTypeArguments[0];
@@ -43,13 +39,13 @@ namespace Schema.NET
 
                 if (mainType == typeof(TimeSpan))
                 {
-                    var timeSpan = XmlConvert.ToTimeSpan(reader.Value.ToString());
+                    var timeSpan = XmlConvert.ToTimeSpan(reader.GetString());
                     var instance = Activator.CreateInstance(genericType, timeSpan);
-                    return instance;
+                    return instance as IValues;
                 }
             }
 
-            return base.ReadJson(reader, objectType, existingValue, serializer);
+            return base.Read(ref reader, typeToConvert, options);
         }
 
         /// <summary>
@@ -57,8 +53,8 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The value to write.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public override void WriteObject(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public override void WriteObject(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
@@ -70,18 +66,18 @@ namespace Schema.NET
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
             if (value is TimeSpan duration)
             {
-                writer.WriteValue(XmlConvert.ToString(duration));
+                writer.WriteStringValue(XmlConvert.ToString(duration));
             }
             else
             {
-                base.WriteObject(writer, value, serializer);
+                base.WriteObject(writer, value, options);
             }
         }
     }
