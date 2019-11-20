@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// Classification of the album by it's type of content: soundtrack, live album, studio album, etc.

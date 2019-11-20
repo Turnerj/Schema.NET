@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// An enumeration that describes different types of medical procedures.

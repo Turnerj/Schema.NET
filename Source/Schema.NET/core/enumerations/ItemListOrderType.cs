@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// Enumerated for values for itemListOrder for indicating how an ordered ItemList is organized.

@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// A list of possible conditions for the item.

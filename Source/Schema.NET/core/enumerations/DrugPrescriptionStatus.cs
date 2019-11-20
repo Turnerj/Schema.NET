@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// Indicates whether this drug is available by prescription or over-the-counter.

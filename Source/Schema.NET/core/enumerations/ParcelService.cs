@@ -1,8 +1,7 @@
-﻿namespace Schema.NET
+namespace Schema.NET
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
 
     /// <summary>
     /// A private parcel service as the delivery mode available for a certain offer.&lt;br/&gt;&lt;br/&gt;
