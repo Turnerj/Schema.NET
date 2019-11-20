@@ -7,83 +7,63 @@ namespace Schema.NET
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
-    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Converts a <see cref="IValues"/> object to and from JSON.
     /// </summary>
     /// <seealso cref="JsonConverter" />
-    public class ValuesJsonConverter : JsonConverter
+    public class ValuesJsonConverter : JsonConverter<IValues>
     {
         private const string NamespacePrefix = "Schema.NET.";
 
         /// <summary>
-        /// Determines whether this instance can convert the specified object type.
-        /// </summary>
-        /// <param name="objectType">Type of the object.</param>
-        /// <returns>
-        /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool CanConvert(Type objectType) => objectType == typeof(IValues);
-
-        /// <summary>
         /// Reads the JSON representation of the object.
         /// </summary>
-        /// <param name="reader">The <see cref="JsonReader"/> to read from.</param>
-        /// <param name="objectType">Type of the object.</param>
-        /// <param name="existingValue">The existing value of object being read.</param>
-        /// <param name="serializer">The calling serializer.</param>
+        /// <param name="reader">The <see cref="Utf8JsonReader"/> to read from.</param>
+        /// <param name="typeToConvert">Type of the object.</param>
+        /// <param name="options">The serializer options.</param>
         /// <returns>The object value.</returns>
-        public override object ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object existingValue,
-            JsonSerializer serializer)
+        public override IValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader is null)
+            if (typeToConvert is null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(typeToConvert));
             }
 
-            if (objectType is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(objectType));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            var mainType = objectType.GetUnderlyingTypeFromNullable();
+            var mainType = typeToConvert.GetUnderlyingTypeFromNullable();
 
             object argument = null;
 
             var tokenType = reader.TokenType;
-            var value = reader.Value;
 
-            var token = JToken.Load(reader);
-            var count = token.Children().Count();
+            var token = JsonDocument.ParseValue(ref reader).RootElement;
+            var count = token.GetArrayLength();
 
 #pragma warning disable CA1062 // Validate arguments of public methods
             if (mainType.GenericTypeArguments.Length == 1)
 #pragma warning restore CA1062 // Validate arguments of public methods
             {
                 var type = mainType.GenericTypeArguments[0];
-                if (tokenType == JsonToken.StartArray)
+                if (tokenType == JsonTokenType.StartArray)
                 {
                     var unwrappedType = type.GetUnderlyingTypeFromNullable();
-                    argument = ReadJsonArray(token, unwrappedType, serializer);
+                    argument = ReadJsonArray(token, unwrappedType);
                 }
                 else
                 {
-                    argument = ParseTokenArguments(token, tokenType, type, value, serializer);
+                    argument = ParseTokenArguments(token, tokenType, type);
                 }
             }
             else
             {
-                if (tokenType == JsonToken.StartArray)
+                if (tokenType == JsonTokenType.StartArray)
                 {
                     var total = 0;
                     var items = new List<object>();
@@ -92,7 +72,7 @@ namespace Schema.NET
                         var type = mainType.GenericTypeArguments[i];
                         var unwrappedType = type.GetUnderlyingTypeFromNullable();
                         // only read as many items as there are tokens left
-                        var args = ReadJsonArray(token, unwrappedType, serializer, count - total);
+                        var args = ReadJsonArray(token, unwrappedType, count - total);
 
                         if (args != null && args.Count > 0)
                         {
@@ -120,7 +100,7 @@ namespace Schema.NET
 
                         try
                         {
-                            var args = ParseTokenArguments(token, tokenType, type, value, serializer);
+                            var args = ParseTokenArguments(token, tokenType, type);
 
                             if (args != null)
                             {
@@ -158,7 +138,7 @@ namespace Schema.NET
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 
-            return instance;
+            return (IValues)instance;
         }
 
         /// <summary>
@@ -166,8 +146,8 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The <see cref="IValues"/> object.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public override void Write(Utf8JsonWriter writer, IValues value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
@@ -179,25 +159,25 @@ namespace Schema.NET
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
             var values = (IValues)value;
             if (values.Count == 0)
             {
-                serializer.Serialize(writer, null);
+                writer.WriteNullValue();
             }
             else if (values.Count == 1)
             {
                 var enumerator = values.GetEnumerator();
                 enumerator.MoveNext();
-                this.WriteObject(writer, enumerator.Current, serializer);
+                this.WriteObject(writer, enumerator.Current, options);
             }
             else
             {
-                this.WriteObject(writer, values.Cast<object>().ToList(), serializer);
+                this.WriteObject(writer, values, options);
             }
         }
 
@@ -206,23 +186,23 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The value to write.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public virtual void WriteObject(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public virtual void WriteObject(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            serializer.Serialize(writer, value);
+            JsonSerializer.Serialize(writer, value, value?.GetType(), options);
         }
 
-        private static object ParseTokenArguments(JToken token, JsonToken tokenType, Type type, object value, JsonSerializer serializer)
+        private static object ParseTokenArguments(JsonElement token, JsonTokenType tokenType, Type type)
         {
             const string SCHEMA_ORG = "http://schema.org/";
             const int SCHEMA_ORG_LENGTH = 18; // equivalent to "http://schema.org/".Length
@@ -239,185 +219,193 @@ namespace Schema.NET
             }
             else
             {
-                if (tokenType == JsonToken.StartObject)
+                if (tokenType == JsonTokenType.StartObject)
                 {
-                    args = ParseTokenObjectArguments(token, type, unwrappedType, serializer);
+                    args = ParseTokenObjectArguments(token, type, unwrappedType);
                 }
                 else
                 {
-                    args = ParseTokenValueArguments(token, tokenType, type, unwrappedType, value, serializer);
+                    args = ParseTokenValueArguments(token, tokenType, type, unwrappedType);
                 }
             }
 
             return args;
         }
 
-        private static object ParseTokenObjectArguments(JToken token, Type type, Type unwrappedType, JsonSerializer serializer)
+        private static object ParseTokenObjectArguments(JsonElement token, Type type, Type unwrappedType)
         {
             object args = null;
             var typeName = GetTypeNameFromToken(token);
             if (string.IsNullOrEmpty(typeName))
             {
-                args = token.ToObject(unwrappedType, serializer);
+                args = token.ToObject(unwrappedType);
             }
             else if (typeName == type.Name)
             {
-                args = token.ToObject(type, serializer);
+                args = token.ToObject(type);
             }
             else
             {
                 var builtType = Type.GetType($"{NamespacePrefix}{typeName}");
                 if (builtType != null && type.GetTypeInfo().IsAssignableFrom(builtType.GetTypeInfo()))
                 {
-                    args = token.ToObject(builtType, serializer);
+                    args = token.ToObject(builtType);
                 }
             }
 
             return args;
         }
 
-        private static object ParseTokenValueArguments(JToken token, JsonToken tokenType, Type type, Type unwrappedType, object value, JsonSerializer serializer)
+        private static object ParseTokenValueArguments(JsonElement token, JsonTokenType tokenType, Type type, Type unwrappedType)
         {
             object args = null;
             if (unwrappedType.IsPrimitiveType())
             {
-                if (value is string)
+                if (tokenType == JsonTokenType.String)
                 {
+                    var value = token.GetString();
                     if (unwrappedType == typeof(string))
                     {
                         args = value;
                     }
                     else if (unwrappedType == typeof(int))
                     {
-                        if (int.TryParse((string)value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
+                        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
                         {
                             args = i;
                         }
                     }
                     else if (unwrappedType == typeof(long))
                     {
-                        if (long.TryParse((string)value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
+                        if (long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
                         {
                             args = i;
                         }
                     }
                     else if (unwrappedType == typeof(float))
                     {
-                        if (float.TryParse((string)value, NumberStyles.Float, CultureInfo.InvariantCulture, out var i))
+                        if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var i))
                         {
                             args = i;
                         }
                     }
                     else if (unwrappedType == typeof(double))
                     {
-                        if (double.TryParse((string)value, NumberStyles.Float, CultureInfo.InvariantCulture, out var i))
+                        if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var i))
                         {
                             args = i;
                         }
                     }
                     else if (unwrappedType == typeof(bool))
                     {
-                        if (bool.TryParse((string)value, out var i))
+                        if (bool.TryParse(value, out var i))
                         {
                             args = i;
                         }
                     }
                 }
-                else if (value is short || value is int || value is long || value is float || value is double)
+                else if (tokenType == JsonTokenType.Number)
                 {
                     // Can safely convert between numeric types
                     if (unwrappedType == typeof(short) || unwrappedType == typeof(int) || unwrappedType == typeof(long) || unwrappedType == typeof(float) || unwrappedType == typeof(double))
                     {
+                        var value = token.GetDecimal();
                         args = Convert.ChangeType(value, unwrappedType, CultureInfo.InvariantCulture);
                     }
                 }
-                else if (value is bool)
+                else if (tokenType == JsonTokenType.True || tokenType == JsonTokenType.False)
                 {
                     if (unwrappedType == typeof(bool))
                     {
-                        args = value;
+                        args = token.GetBoolean();
                     }
                 }
-                else if (value is DateTime || value is DateTimeOffset)
-                {
-                    // NO-OP: can't put a date into a primitive type
-                }
+
+                // else if (value is DateTime || value is DateTimeOffset)
+                // {
+                //    // NO-OP: can't put a date into a primitive type
+                // }
                 else
                 {
-                    args = value;
+                    args = token.ToObject(typeof(object));
                 }
             }
             else if (unwrappedType == typeof(decimal))
             {
-                if (value is string)
+                if (tokenType == JsonTokenType.String)
                 {
-                    if (decimal.TryParse((string)value, NumberStyles.Currency, CultureInfo.InvariantCulture, out var i))
+                    if (decimal.TryParse(token.GetString(), NumberStyles.Currency, CultureInfo.InvariantCulture, out var i))
                     {
                         args = i;
                     }
                 }
-                else
+                else if (tokenType == JsonTokenType.Number)
                 {
-                    args = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                    if (token.TryGetDecimal(out var i))
+                    {
+                        args = i;
+                    }
                 }
             }
             else if (unwrappedType == typeof(DateTime))
             {
-                if (value is string)
+                if (tokenType == JsonTokenType.String)
                 {
-                    if (DateTime.TryParse((string)value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var i))
+                    if (DateTime.TryParse(token.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var i))
                     {
                         args = i;
                     }
                 }
-                else if (value is DateTime)
-                {
-                    args = value;
-                }
-                else if (value is DateTimeOffset)
-                {
-                    args = ((DateTimeOffset)value).DateTime;
-                }
-                else if (value is short || value is int || value is long || value is float || value is double)
-                {
-                    // NO-OP: can't put a primitive type into a date
-                }
-                else
-                {
-                    args = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
-                }
+
+                // else if (value is DateTime)
+                // {
+                //    args = value;
+                // }
+                // else if (value is DateTimeOffset)
+                // {
+                //    args = ((DateTimeOffset)value).DateTime;
+                // }
+                // else if (value is short || value is int || value is long || value is float || value is double)
+                // {
+                //    // NO-OP: can't put a primitive type into a date
+                // }
+                // else
+                // {
+                //    args = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                // }
             }
             else if (unwrappedType == typeof(DateTimeOffset))
             {
-                if (value is string)
+                if (tokenType == JsonTokenType.String)
                 {
-                    if (DateTimeOffset.TryParse((string)value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var i))
+                    if (DateTimeOffset.TryParse(token.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var i))
                     {
                         args = i;
                     }
                 }
-                else if (value is DateTime)
-                {
-                    args = new DateTimeOffset((DateTime)value);
-                }
-                else if (value is DateTimeOffset)
-                {
-                    args = value;
-                }
-                else
-                {
-                    args = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
-                }
+
+                // else if (value is DateTime)
+                // {
+                //    args = new DateTimeOffset((DateTime)value);
+                // }
+                // else if (value is DateTimeOffset)
+                // {
+                //    args = value;
+                // }
+                // else
+                // {
+                //    args = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                // }
             }
             else
             {
                 var classType = ToClass(type);
-                if (tokenType == JsonToken.String)
+                if (tokenType == JsonTokenType.String)
                 {
                     if (classType == typeof(Uri))
                     {
                         // REVIEW: Avoid invalid URIs being assigned as URI (Should we only allow absolute URIs?)
-                        if (Uri.TryCreate((string)value, UriKind.Absolute, out var i))
+                        if (Uri.TryCreate(token.GetString(), UriKind.Absolute, out var i))
                         {
                             args = i;
                         }
@@ -429,7 +417,7 @@ namespace Schema.NET
                 {
                     if (!type.GetTypeInfo().IsInterface && !type.GetTypeInfo().IsClass)
                     {
-                        args = token.ToObject(classType, serializer); // This is expected to throw on some case
+                        args = token.ToObject(classType); // This is expected to throw on some case
                     }
                 }
             }
@@ -454,7 +442,7 @@ namespace Schema.NET
             return type;
         }
 
-        private static IList ReadJsonArray(JToken token, Type type, JsonSerializer serializer, int? count = null)
+        private static IList ReadJsonArray(JsonElement token, Type type, int? count = null)
         {
             var classType = ToClass(type);
             var listType = typeof(List<>).MakeGenericType(type); // always read into list of interfaces
@@ -464,15 +452,15 @@ namespace Schema.NET
             if (count is null)
             {
                 // if maximum item count not assigned, set to count of child tokens
-                count = token.Children().Count();
+                count = token.GetArrayLength();
             }
 
-            foreach (var childToken in token.Children())
+            foreach (var childToken in token.EnumerateArray())
             {
                 var typeName = GetTypeNameFromToken(childToken);
                 if (string.IsNullOrEmpty(typeName))
                 {
-                    var child = childToken.ToObject(classType, serializer);
+                    var child = childToken.ToObject(classType);
                     var method = listType.GetRuntimeMethod(nameof(List<object>.Add), new[] { classType });
 
                     if (method != null)
@@ -487,7 +475,7 @@ namespace Schema.NET
                     var builtType = Type.GetType($"{NamespacePrefix}{typeName}");
                     if (builtType != null && type.GetTypeInfo().IsAssignableFrom(builtType.GetTypeInfo()))
                     {
-                        var child = (Thing)childToken.ToObject(builtType, serializer);
+                        var child = (Thing)childToken.ToObject(builtType);
                         var method = listType.GetRuntimeMethod(nameof(List<object>.Add), new[] { classType });
 
                         if (method != null)
@@ -508,10 +496,14 @@ namespace Schema.NET
             return (IList)list;
         }
 
-        private static string GetTypeNameFromToken(JToken token)
+        private static string GetTypeNameFromToken(JsonElement token)
         {
-            var o = token as JObject;
-            return o?.SelectToken("@type")?.ToString();
+            if (token.TryGetProperty("@type", out var typeElement))
+            {
+                return typeElement.GetString();
+            }
+
+            return null;
         }
     }
 }
