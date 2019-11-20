@@ -1,9 +1,10 @@
 namespace Schema.NET
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
-
 
     public partial class Thing : JsonLdObject
     {
@@ -12,30 +13,19 @@ namespace Schema.NET
         /// <summary>
         /// Default serializer settings used.
         /// </summary>
-        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
-        {
-            Converters = new List<JsonConverter>()
-            {
-                new StringEnumConverter()
-            },
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore
-        };
+        private static readonly JsonSerializerOptions SerializerSettings;
 
-        /// <summary>
-        /// Serializer settings used when trying to avoid XSS vulnerabilities where user-supplied data is used
-        /// and the output of the serialization is embedded into a web page raw.
-        /// </summary>
-        private static readonly JsonSerializerSettings HtmlEscapedSerializerSettings = new JsonSerializerSettings()
+#pragma warning disable CA1810 // Initialize reference type static fields inline - required to add custom Converter
+        static Thing()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
-            Converters = new List<JsonConverter>()
+            SerializerSettings = new JsonSerializerOptions
             {
-                new StringEnumConverter()
-            },
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-            StringEscapeHandling = StringEscapeHandling.EscapeHtml
-        };
+                IgnoreNullValues = true
+            };
+
+            SerializerSettings.Converters.Add(new JsonStringEnumConverter());
+        }
 
         /// <summary>
         /// Returns the JSON-LD representation of this instance.
@@ -55,22 +45,18 @@ namespace Schema.NET
         /// <returns>
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
-        public string ToHtmlEscapedString() => this.ToString(HtmlEscapedSerializerSettings);
+        [Obsolete("Use ToString() - The default encoder automatically escapes HTML within strings")]
+        public string ToHtmlEscapedString() => this.ToString();
 
         /// <summary>
-        /// Returns the JSON-LD representation of this instance using the <see cref="JsonSerializerSettings"/> provided.
-        ///
-        /// Caution: You should ensure your <paramref name="serializerSettings"/> has
-        /// <see cref="JsonSerializerSettings.StringEscapeHandling"/> set to <see cref="StringEscapeHandling.EscapeHtml"/>
-        /// if you plan to embed the output using @Html.Raw anywhere in a web page, else you open yourself up a possible
-        /// Cross-Site Scripting (XSS) attack if untrusted data is set on any of this object's properties.
+        /// Returns the JSON-LD representation of this instance using the <see cref="JsonSerializerOptions"/> provided.
         /// </summary>
         /// <param name="serializerSettings">Serialization settings.</param>
         /// <returns>
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
-        public string ToString(JsonSerializerSettings serializerSettings) =>
-            RemoveAllButFirstContext(JsonConvert.SerializeObject(this, serializerSettings));
+        public string ToString(JsonSerializerOptions serializerSettings) =>
+            RemoveAllButFirstContext(JsonSerializer.Serialize(this, serializerSettings));
 
         private static string RemoveAllButFirstContext(string json)
         {
