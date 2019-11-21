@@ -15,16 +15,30 @@ namespace Schema.NET
         /// </summary>
         private static readonly JsonSerializerOptions SerializerSettings;
 
+        /// <summary>
+        /// Serializer settings used when trying to avoid XSS vulnerabilities where user-supplied data is used
+        /// and the output of the serialization is embedded into a web page raw.
+        /// </summary>
+        private static readonly JsonSerializerOptions HtmlEscapedSerializerSettings;
+
 #pragma warning disable CA1810 // Initialize reference type static fields inline - required to add custom Converter
         static Thing()
 #pragma warning restore CA1810 // Initialize reference type static fields inline
         {
+            var stringEnumConverter = new JsonStringEnumConverter();
+
             SerializerSettings = new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                IgnoreNullValues = true
+            };
+            SerializerSettings.Converters.Add(stringEnumConverter);
+
+            HtmlEscapedSerializerSettings = new JsonSerializerOptions
             {
                 IgnoreNullValues = true
             };
-
-            SerializerSettings.Converters.Add(new JsonStringEnumConverter());
+            HtmlEscapedSerializerSettings.Converters.Add(stringEnumConverter);
         }
 
         /// <summary>
@@ -45,8 +59,7 @@ namespace Schema.NET
         /// <returns>
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
-        [Obsolete("Use ToString() - The default encoder automatically escapes HTML within strings")]
-        public string ToHtmlEscapedString() => this.ToString();
+        public string ToHtmlEscapedString() => this.ToString(HtmlEscapedSerializerSettings);
 
         /// <summary>
         /// Returns the JSON-LD representation of this instance using the <see cref="JsonSerializerOptions"/> provided.

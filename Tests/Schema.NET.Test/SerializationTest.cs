@@ -72,9 +72,7 @@ namespace Schema.NET.Test
 
         [Fact]
         public void ToHtmlEscapedString_UnsafeBookData_ReturnsExpectedJsonLd() =>
-#pragma warning disable CS0618 // Type or member is obsolete
             Assert.Equal(JsonHtmlEscaped, this.book.ToHtmlEscapedString());
-#pragma warning restore CS0618 // Type or member is obsolete
 
         [Fact]
         public void ToStringWithCustomSerializerSettings_UnsafeAuthorData_ReturnsExpectedJsonLd() =>
