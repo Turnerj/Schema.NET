@@ -37,7 +37,7 @@ namespace Schema.NET.Tool.Repositories
                 return null;
             }
 
-            if (!token.TryGetProperty("http://schema.org/supersededBy", out var supercededByToken))
+            if (token.TryGetProperty("http://schema.org/supersededBy", out var supercededByToken))
             {
                 // Ignore deprecated properties.
                 return null;
