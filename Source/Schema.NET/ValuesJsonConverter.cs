@@ -180,7 +180,13 @@ namespace Schema.NET
             }
             else
             {
-                this.WriteObject(writer, values, options);
+                writer.WriteStartArray();
+                foreach (var item in values)
+                {
+                    this.WriteObject(writer, item, options);
+                }
+
+                writer.WriteEndArray();
             }
         }
 
