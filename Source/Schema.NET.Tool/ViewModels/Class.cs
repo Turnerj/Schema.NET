@@ -58,7 +58,7 @@ namespace Schema.NET.Tool.ViewModels
 
             // Using statements
             stringBuilder.AppendIndentLine(4, "using System;");
-            stringBuilder.AppendIndentLine(4, "using System.Runtime.Serialization;");
+            stringBuilder.AppendIndentLine(4, "using System.Text.Json;");
             stringBuilder.AppendIndentLine(4, "using System.Text.Json.Serialization;");
             stringBuilder.AppendLine();
 
@@ -122,7 +122,6 @@ namespace Schema.NET.Tool.ViewModels
             stringBuilder.AppendCommentSummary(4, this.Description);
 
             // Class
-            stringBuilder.AppendIndentLine(4, "[DataContract]");
             if (this.IsCombined)
             {
                 stringBuilder.AppendIndent(4, $"public abstract partial class {this.Name}");
@@ -150,22 +149,11 @@ namespace Schema.NET.Tool.ViewModels
 
             stringBuilder.AppendIndentLine(4, "{");
 
-            if (string.Equals(this.Name, "Thing", StringComparison.OrdinalIgnoreCase))
-            {
-                // Context Property
-                stringBuilder.AppendIndentLine(8, "/// <summary>");
-                stringBuilder.AppendIndentLine(8, "/// Gets the context for the object, specifying that it comes from schema.org.");
-                stringBuilder.AppendIndentLine(8, "/// </summary>");
-                stringBuilder.AppendIndentLine(8, "[DataMember(Name = \"@context\", Order = 0)]");
-                stringBuilder.AppendIndentLine(8, $"public override string Context => \"http://schema.org\";");
-                stringBuilder.AppendLine();
-            }
-
             // Type Property
             stringBuilder.AppendIndentLine(8, "/// <summary>");
             stringBuilder.AppendIndentLine(8, "/// Gets the name of the type as specified by schema.org.");
             stringBuilder.AppendIndentLine(8, "/// </summary>");
-            stringBuilder.AppendIndentLine(8, "[DataMember(Name = \"@type\", Order = 1)]");
+            stringBuilder.AppendIndentLine(8, "[JsonPropertyName(\"@type\")]");
             stringBuilder.AppendIndentLine(8, $"public override string Type => \"{this.Name}\";");
 
             // Properties

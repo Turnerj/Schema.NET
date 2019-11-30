@@ -24,7 +24,6 @@ namespace Schema.NET.Tool.ViewModels
             // Using statements
             stringBuilder.AppendIndentLine(4, "using System.Runtime.Serialization;");
             stringBuilder.AppendIndentLine(4, "using System.Text.Json.Serialization;");
-            stringBuilder.AppendIndentLine(4, "using Newtonsoft.Json.Converters;");
             stringBuilder.AppendLine();
 
             // Comment
