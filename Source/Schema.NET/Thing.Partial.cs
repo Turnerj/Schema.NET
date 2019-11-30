@@ -69,13 +69,13 @@ namespace Schema.NET
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
         public string ToString(JsonSerializerOptions serializerSettings) =>
-            RemoveAllButFirstContext(JsonSerializer.Serialize(this, serializerSettings));
+            RemoveAllButRootContext(JsonSerializer.Serialize(this, serializerSettings));
 
-        private static string RemoveAllButFirstContext(string json)
+        private static string RemoveAllButRootContext(string json)
         {
             var stringBuilder = new StringBuilder(json);
-            var startIndex = ContextPropertyJson.Length + 1; // We add the one to represent the opening curly brace.
-            stringBuilder.Replace(ContextPropertyJson, string.Empty, startIndex, stringBuilder.Length - startIndex);
+            var lastIndex = json.LastIndexOf(ContextPropertyJson, StringComparison.OrdinalIgnoreCase);
+            stringBuilder.Replace(ContextPropertyJson, string.Empty, 0, lastIndex);
             return stringBuilder.ToString();
         }
     }
