@@ -73,7 +73,7 @@ namespace Schema.NET.Test
                     "\"@context\":\"https://schema.org\"," +
                     "\"@type\":\"BankAccount\"," +
                     "\"bankAccountType\":[" +
-                        "\"http://example.com/1\"," +
+                        "\"http://example.com/1\"" +
                     "]" +
                 "}";
 
