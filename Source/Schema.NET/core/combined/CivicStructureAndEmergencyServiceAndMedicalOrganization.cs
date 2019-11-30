@@ -1,46 +1,45 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// See CivicStructure, EmergencyService, MedicalOrganization for more information.
     /// </summary>
-    public partial interface ICivicStructureAndEmergencyServiceAndMedicalOrganization : IEmergencyService, IMedicalOrganization, ICivicStructure
+    public partial interface ICivicStructureAndEmergencyServiceAndMedicalOrganization : ICivicStructure, IEmergencyService, IMedicalOrganization
     {
     }
 
     /// <summary>
     /// See CivicStructure, EmergencyService, MedicalOrganization for more information.
     /// </summary>
-    [DataContract]
     public abstract partial class CivicStructureAndEmergencyServiceAndMedicalOrganization : LocalBusinessAndOrganizationAndPlace, ICivicStructureAndEmergencyServiceAndMedicalOrganization
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "CivicStructureAndEmergencyServiceAndMedicalOrganization";
 
         /// <summary>
         /// Name or unique ID of network. (Networks are often reused across different insurance plans).
         /// </summary>
-        [DataMember(Name = "healthPlanNetworkId", Order = 306)]
+        [JsonPropertyName("healthPlanNetworkId")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> HealthPlanNetworkId { get; set; }
 
         /// <summary>
         /// Whether the provider is accepting new patients.
         /// </summary>
-        [DataMember(Name = "isAcceptingNewPatients", Order = 307)]
+        [JsonPropertyName("isAcceptingNewPatients")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<bool?> IsAcceptingNewPatients { get; set; }
 
         /// <summary>
         /// A medical specialty of the provider.
         /// </summary>
-        [DataMember(Name = "medicalSpecialty", Order = 308)]
+        [JsonPropertyName("medicalSpecialty")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public virtual OneOrMany<MedicalSpecialty?> MedicalSpecialty { get; set; }
 
@@ -53,7 +52,7 @@
         /// &lt;li&gt;If a business is open 7 days a week, then it can be specified as &lt;code&gt;&amp;lt;time itemprop=&amp;quot;openingHours&amp;quot; datetime=&amp;quot;Mo-Su&amp;quot;&amp;gt;Monday through Sunday, all day&amp;lt;/time&amp;gt;&lt;/code&gt;.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "openingHours", Order = 309)]
+        [JsonPropertyName("openingHours")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<string> OpeningHours { get; set; }
     }

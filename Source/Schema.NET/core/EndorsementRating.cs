@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -22,13 +22,12 @@
     /// An &lt;a class="localLink" href="http://schema.org/EndorsementRating"&gt;EndorsementRating&lt;/a&gt; may be part of a numeric scale or organized system, but this is not required: having an explicit type for indicating a positive,
     /// endorsement rating is particularly useful in the absence of numeric scales as it helps consumers understand that the rating is broadly positive.
     /// </summary>
-    [DataContract]
     public partial class EndorsementRating : Rating, IEndorsementRating
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "EndorsementRating";
     }
 }

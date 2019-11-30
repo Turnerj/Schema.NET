@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -22,13 +22,12 @@
     /// <summary>
     /// A dataset in downloadable form.
     /// </summary>
-    [DataContract]
     public partial class DataDownload : MediaObject, IDataDownload
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "DataDownload";
 
         /// <summary>
@@ -38,7 +37,7 @@
         /// If the &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; is "depression rating", the &lt;a class="localLink" href="http://schema.org/measurementTechnique"&gt;measurementTechnique&lt;/a&gt; could be "Zung Scale" or "HAM-D" or "Beck Depression Inventory".&lt;br/&gt;&lt;br/&gt;
         /// If there are several &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; properties recorded for some given data object, use a &lt;a class="localLink" href="http://schema.org/PropertyValue"&gt;PropertyValue&lt;/a&gt; for each &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; and attach the corresponding &lt;a class="localLink" href="http://schema.org/measurementTechnique"&gt;measurementTechnique&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "measurementTechnique", Order = 306)]
+        [JsonPropertyName("measurementTechnique")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> MeasurementTechnique { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -24,13 +24,12 @@
     /// &lt;li&gt;&lt;a class="localLink" href="http://schema.org/ReceiveAction"&gt;ReceiveAction&lt;/a&gt;: Unlike ReceiveAction, TakeAction implies that ownership has been transfered.&lt;/li&gt;
     /// &lt;/ul&gt;
     /// </summary>
-    [DataContract]
     public partial class TakeAction : TransferAction, ITakeAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TakeAction";
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of achieving victory in a competitive activity.
     /// </summary>
-    [DataContract]
     public partial class WinAction : AchieveAction, IWinAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "WinAction";
 
         /// <summary>
         /// A sub property of participant. The loser of the action.
         /// </summary>
-        [DataMember(Name = "loser", Order = 306)]
+        [JsonPropertyName("loser")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPerson> Loser { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -35,40 +35,39 @@
     /// A reservation for a rental car.&lt;br/&gt;&lt;br/&gt;
     /// Note: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations.
     /// </summary>
-    [DataContract]
     public partial class RentalCarReservation : Reservation, IRentalCarReservation
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "RentalCarReservation";
 
         /// <summary>
         /// Where a rental car can be dropped off.
         /// </summary>
-        [DataMember(Name = "dropoffLocation", Order = 306)]
+        [JsonPropertyName("dropoffLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> DropoffLocation { get; set; }
 
         /// <summary>
         /// When a rental car can be dropped off.
         /// </summary>
-        [DataMember(Name = "dropoffTime", Order = 307)]
+        [JsonPropertyName("dropoffTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DateTimeOffset?> DropoffTime { get; set; }
 
         /// <summary>
         /// Where a taxi will pick up a passenger or a rental car can be picked up.
         /// </summary>
-        [DataMember(Name = "pickupLocation", Order = 308)]
+        [JsonPropertyName("pickupLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> PickupLocation { get; set; }
 
         /// <summary>
         /// When a taxi will pickup a passenger or a rental car can be picked up.
         /// </summary>
-        [DataMember(Name = "pickupTime", Order = 309)]
+        [JsonPropertyName("pickupTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DateTimeOffset?> PickupTime { get; set; }
     }

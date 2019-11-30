@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -33,26 +33,25 @@
     /// &lt;li&gt;&lt;a class="localLink" href="http://schema.org/TakeAction"&gt;TakeAction&lt;/a&gt;: Unlike TakeAction, ReceiveAction does not imply that the ownership has been transfered (e.g. I can receive a package, but it does not mean the package is now mine).&lt;/li&gt;
     /// &lt;/ul&gt;
     /// </summary>
-    [DataContract]
     public partial class ReceiveAction : TransferAction, IReceiveAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ReceiveAction";
 
         /// <summary>
         /// A sub property of instrument. The method of delivery.
         /// </summary>
-        [DataMember(Name = "deliveryMethod", Order = 306)]
+        [JsonPropertyName("deliveryMethod")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DeliveryMethod?> DeliveryMethod { get; set; }
 
         /// <summary>
         /// A sub property of participant. The participant who is at the sending end of the action.
         /// </summary>
-        [DataMember(Name = "sender", Order = 307)]
+        [JsonPropertyName("sender")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IAudience, IOrganization, IPerson> Sender { get; set; }
     }

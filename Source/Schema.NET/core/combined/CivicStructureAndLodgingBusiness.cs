@@ -1,60 +1,59 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// See CivicStructure, LodgingBusiness for more information.
     /// </summary>
-    public partial interface ICivicStructureAndLodgingBusiness : ILodgingBusiness, ICivicStructure
+    public partial interface ICivicStructureAndLodgingBusiness : ICivicStructure, ILodgingBusiness
     {
     }
 
     /// <summary>
     /// See CivicStructure, LodgingBusiness for more information.
     /// </summary>
-    [DataContract]
     public abstract partial class CivicStructureAndLodgingBusiness : LocalBusinessAndPlace, ICivicStructureAndLodgingBusiness
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "CivicStructureAndLodgingBusiness";
 
         /// <summary>
         /// An amenity feature (e.g. a characteristic or service) of the Accommodation. This generic property does not make a statement about whether the feature is included in an offer for the main accommodation or available at extra costs.
         /// </summary>
-        [DataMember(Name = "amenityFeature", Order = 306)]
+        [JsonPropertyName("amenityFeature")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<ILocationFeatureSpecification> AmenityFeature { get; set; }
 
         /// <summary>
         /// An intended audience, i.e. a group for whom something was created.
         /// </summary>
-        [DataMember(Name = "audience", Order = 307)]
+        [JsonPropertyName("audience")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IAudience> Audience { get; set; }
 
         /// <summary>
         /// A language someone may use with or at the item, service or place. Please use one of the language codes from the &lt;a href="http://tools.ietf.org/html/bcp47"&gt;IETF BCP 47 standard&lt;/a&gt;. See also &lt;a class="localLink" href="http://schema.org/inLanguage"&gt;inLanguage&lt;/a&gt;
         /// </summary>
-        [DataMember(Name = "availableLanguage", Order = 308)]
+        [JsonPropertyName("availableLanguage")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<ILanguage, string> AvailableLanguage { get; set; }
 
         /// <summary>
         /// The earliest someone may check into a lodging establishment.
         /// </summary>
-        [DataMember(Name = "checkinTime", Order = 309)]
+        [JsonPropertyName("checkinTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<DateTimeOffset?, TimeSpan?> CheckinTime { get; set; }
 
         /// <summary>
         /// The latest someone may check out of a lodging establishment.
         /// </summary>
-        [DataMember(Name = "checkoutTime", Order = 310)]
+        [JsonPropertyName("checkoutTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<DateTimeOffset?, TimeSpan?> CheckoutTime { get; set; }
 
@@ -62,7 +61,7 @@
         /// The number of rooms (excluding bathrooms and closets) of the accommodation or lodging business.
         /// Typical unit code(s): ROM for room or C62 for no unit. The type of room can be put in the unitText property of the QuantitativeValue.
         /// </summary>
-        [DataMember(Name = "numberOfRooms", Order = 311)]
+        [JsonPropertyName("numberOfRooms")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<int?, IQuantitativeValue> NumberOfRooms { get; set; }
 
@@ -75,21 +74,21 @@
         /// &lt;li&gt;If a business is open 7 days a week, then it can be specified as &lt;code&gt;&amp;lt;time itemprop=&amp;quot;openingHours&amp;quot; datetime=&amp;quot;Mo-Su&amp;quot;&amp;gt;Monday through Sunday, all day&amp;lt;/time&amp;gt;&lt;/code&gt;.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "openingHours", Order = 312)]
+        [JsonPropertyName("openingHours")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<string> OpeningHours { get; set; }
 
         /// <summary>
         /// Indicates whether pets are allowed to enter the accommodation or lodging business. More detailed information can be put in a text value.
         /// </summary>
-        [DataMember(Name = "petsAllowed", Order = 313)]
+        [JsonPropertyName("petsAllowed")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<bool?, string> PetsAllowed { get; set; }
 
         /// <summary>
         /// An official rating for a lodging business or food establishment, e.g. from national associations or standards bodies. Use the author property to indicate the rating organization, e.g. as an Organization with name such as (e.g. HOTREC, DEHOGA, WHR, or Hotelstars).
         /// </summary>
-        [DataMember(Name = "starRating", Order = 314)]
+        [JsonPropertyName("starRating")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IRating> StarRating { get; set; }
     }

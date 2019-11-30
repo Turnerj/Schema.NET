@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -34,19 +34,18 @@
     /// &lt;li&gt;&lt;a class="localLink" href="http://schema.org/TrackAction"&gt;TrackAction&lt;/a&gt;: Unlike TrackAction, FollowAction refers to the polling of updates of all aspects of animate objects rather than the location of inanimate objects (e.g. you track a package, but you don't follow it).&lt;/li&gt;
     /// &lt;/ul&gt;
     /// </summary>
-    [DataContract]
     public partial class FollowAction : InteractAction, IFollowAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "FollowAction";
 
         /// <summary>
         /// A sub property of object. The person or organization being followed.
         /// </summary>
-        [DataMember(Name = "followee", Order = 306)]
+        [JsonPropertyName("followee")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IOrganization, IPerson> Followee { get; set; }
     }

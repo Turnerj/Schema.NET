@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -35,26 +35,25 @@
     /// <summary>
     /// The price for the delivery of an offer using a particular delivery method.
     /// </summary>
-    [DataContract]
     public partial class DeliveryChargeSpecification : PriceSpecification, IDeliveryChargeSpecification
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "DeliveryChargeSpecification";
 
         /// <summary>
         /// The delivery method(s) to which the delivery charge or payment charge specification applies.
         /// </summary>
-        [DataMember(Name = "appliesToDeliveryMethod", Order = 406)]
+        [JsonPropertyName("appliesToDeliveryMethod")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DeliveryMethod?> AppliesToDeliveryMethod { get; set; }
 
         /// <summary>
         /// The geographic area where a service or offered item is provided.
         /// </summary>
-        [DataMember(Name = "areaServed", Order = 407)]
+        [JsonPropertyName("areaServed")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IAdministrativeArea, IGeoShape, IPlace, string> AreaServed { get; set; }
 
@@ -62,7 +61,7 @@
         /// The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.&lt;br/&gt;&lt;br/&gt;
         /// See also &lt;a class="localLink" href="http://schema.org/ineligibleRegion"&gt;ineligibleRegion&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "eligibleRegion", Order = 408)]
+        [JsonPropertyName("eligibleRegion")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IGeoShape, IPlace, string> EligibleRegion { get; set; }
 
@@ -70,7 +69,7 @@
         /// The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is not valid, e.g. a region where the transaction is not allowed.&lt;br/&gt;&lt;br/&gt;
         /// See also &lt;a class="localLink" href="http://schema.org/eligibleRegion"&gt;eligibleRegion&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "ineligibleRegion", Order = 409)]
+        [JsonPropertyName("ineligibleRegion")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IGeoShape, IPlace, string> IneligibleRegion { get; set; }
     }

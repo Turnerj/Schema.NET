@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// An agent orders an object/product/service to be delivered/sent.
     /// </summary>
-    [DataContract]
     public partial class OrderAction : TradeAction, IOrderAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "OrderAction";
 
         /// <summary>
         /// A sub property of instrument. The method of delivery.
         /// </summary>
-        [DataMember(Name = "deliveryMethod", Order = 306)]
+        [JsonPropertyName("deliveryMethod")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DeliveryMethod?> DeliveryMethod { get; set; }
     }

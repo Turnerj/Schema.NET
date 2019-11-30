@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -14,13 +14,12 @@
     /// <summary>
     /// The act of arriving at a place. An agent arrives at a destination from a fromLocation, optionally with participants.
     /// </summary>
-    [DataContract]
     public partial class ArriveAction : MoveAction, IArriveAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ArriveAction";
     }
 }

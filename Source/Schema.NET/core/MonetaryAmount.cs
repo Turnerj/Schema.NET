@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -50,48 +50,47 @@
     /// <summary>
     /// A monetary value or range. This type can be used to describe an amount of money such as $50 USD, or a range as in describing a bank account being suitable for a balance between £1,000 and £1,000,000 GBP, or the value of a salary, etc. It is recommended to use &lt;a class="localLink" href="http://schema.org/PriceSpecification"&gt;PriceSpecification&lt;/a&gt; Types to describe the price of an Offer, Invoice, etc.
     /// </summary>
-    [DataContract]
     public partial class MonetaryAmount : StructuredValue, IMonetaryAmount
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "MonetaryAmount";
 
         /// <summary>
         /// The currency in which the monetary amount is expressed.&lt;br/&gt;&lt;br/&gt;
         /// Use standard formats: &lt;a href="http://en.wikipedia.org/wiki/ISO_4217"&gt;ISO 4217 currency format&lt;/a&gt; e.g. "USD"; &lt;a href="https://en.wikipedia.org/wiki/List_of_cryptocurrencies"&gt;Ticker symbol&lt;/a&gt; for cryptocurrencies e.g. "BTC"; well known names for &lt;a href="https://en.wikipedia.org/wiki/Local_exchange_trading_system"&gt;Local Exchange Tradings Systems&lt;/a&gt; (LETS) and other currency types e.g. "Ithaca HOUR".
         /// </summary>
-        [DataMember(Name = "currency", Order = 306)]
+        [JsonPropertyName("currency")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Currency { get; set; }
 
         /// <summary>
         /// The upper value of some characteristic or property.
         /// </summary>
-        [DataMember(Name = "maxValue", Order = 307)]
+        [JsonPropertyName("maxValue")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<double?> MaxValue { get; set; }
 
         /// <summary>
         /// The lower value of some characteristic or property.
         /// </summary>
-        [DataMember(Name = "minValue", Order = 308)]
+        [JsonPropertyName("minValue")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<double?> MinValue { get; set; }
 
         /// <summary>
         /// The date when the item becomes valid.
         /// </summary>
-        [DataMember(Name = "validFrom", Order = 309)]
+        [JsonPropertyName("validFrom")]
         [JsonConverter(typeof(DateTimeToIso8601DateValuesJsonConverter))]
         public Values<int?, DateTime?, DateTimeOffset?> ValidFrom { get; set; }
 
         /// <summary>
         /// The date after when the item is not valid. For example the end of an offer, salary period, or a period of opening hours.
         /// </summary>
-        [DataMember(Name = "validThrough", Order = 310)]
+        [JsonPropertyName("validThrough")]
         [JsonConverter(typeof(DateTimeToIso8601DateValuesJsonConverter))]
         public Values<int?, DateTime?, DateTimeOffset?> ValidThrough { get; set; }
 
@@ -104,7 +103,7 @@
         /// &lt;li&gt;Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "value", Order = 311)]
+        [JsonPropertyName("value")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<bool?, double?, IStructuredValue, string> Value { get; set; }
     }

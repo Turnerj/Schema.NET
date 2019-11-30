@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// Intended audience for an item, i.e. the group for whom the item was created.
     /// </summary>
-    [DataContract]
     public partial class Audience : Intangible, IAudience
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Audience";
 
         /// <summary>
         /// The target group associated with a given audience (e.g. veterans, car owners, musicians, etc.).
         /// </summary>
-        [DataMember(Name = "audienceType", Order = 206)]
+        [JsonPropertyName("audienceType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> AudienceType { get; set; }
 
         /// <summary>
         /// The geographic area associated with the audience.
         /// </summary>
-        [DataMember(Name = "geographicArea", Order = 207)]
+        [JsonPropertyName("geographicArea")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IAdministrativeArea> GeographicArea { get; set; }
     }

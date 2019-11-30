@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// The act of transferring/moving (abstract or concrete) animate or inanimate objects from one place to another.
     /// </summary>
-    [DataContract]
     public partial class TransferAction : Action, ITransferAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TransferAction";
 
         /// <summary>
         /// A sub property of location. The original location of the object or the agent before the action.
         /// </summary>
-        [DataMember(Name = "fromLocation", Order = 206)]
+        [JsonPropertyName("fromLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> FromLocation { get; set; }
 
         /// <summary>
         /// A sub property of location. The final location of the object or the agent after the action.
         /// </summary>
-        [DataMember(Name = "toLocation", Order = 207)]
+        [JsonPropertyName("toLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> ToLocation { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -33,40 +33,39 @@
     /// <summary>
     /// Used to describe a seat, such as a reserved seat in an event reservation.
     /// </summary>
-    [DataContract]
     public partial class Seat : Intangible, ISeat
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Seat";
 
         /// <summary>
         /// The type/class of the seat.
         /// </summary>
-        [DataMember(Name = "seatingType", Order = 206)]
+        [JsonPropertyName("seatingType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> SeatingType { get; set; }
 
         /// <summary>
         /// The location of the reserved seat (e.g., 27).
         /// </summary>
-        [DataMember(Name = "seatNumber", Order = 207)]
+        [JsonPropertyName("seatNumber")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> SeatNumber { get; set; }
 
         /// <summary>
         /// The row location of the reserved seat (e.g., B).
         /// </summary>
-        [DataMember(Name = "seatRow", Order = 208)]
+        [JsonPropertyName("seatRow")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> SeatRow { get; set; }
 
         /// <summary>
         /// The section location of the reserved seat (e.g. Orchestra).
         /// </summary>
-        [DataMember(Name = "seatSection", Order = 209)]
+        [JsonPropertyName("seatSection")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> SeatSection { get; set; }
     }

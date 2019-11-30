@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// A PerformanceRole is a Role that some entity places with regard to a theatrical performance, e.g. in a Movie, TVSeries etc.
     /// </summary>
-    [DataContract]
     public partial class PerformanceRole : Role, IPerformanceRole
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "PerformanceRole";
 
         /// <summary>
         /// The name of a character played in some acting or performing role, i.e. in a PerformanceRole.
         /// </summary>
-        [DataMember(Name = "characterName", Order = 306)]
+        [JsonPropertyName("characterName")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> CharacterName { get; set; }
     }

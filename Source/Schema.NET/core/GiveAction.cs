@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -28,19 +28,18 @@
     /// &lt;li&gt;&lt;a class="localLink" href="http://schema.org/SendAction"&gt;SendAction&lt;/a&gt;: Unlike SendAction, GiveAction implies that ownership is being transferred (e.g. I may send my laptop to you, but that doesn't mean I'm giving it to you).&lt;/li&gt;
     /// &lt;/ul&gt;
     /// </summary>
-    [DataContract]
     public partial class GiveAction : TransferAction, IGiveAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "GiveAction";
 
         /// <summary>
         /// A sub property of participant. The participant who is at the receiving end of the action.
         /// </summary>
-        [DataMember(Name = "recipient", Order = 306)]
+        [JsonPropertyName("recipient")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IAudience, IContactPoint, IOrganization, IPerson> Recipient { get; set; }
     }

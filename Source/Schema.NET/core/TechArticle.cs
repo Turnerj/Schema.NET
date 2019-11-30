@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// A technical article - Example: How-to (task) topics, step-by-step, procedural troubleshooting, specifications, etc.
     /// </summary>
-    [DataContract]
     public partial class TechArticle : Article, ITechArticle
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TechArticle";
 
         /// <summary>
         /// Prerequisites needed to fulfill steps in article.
         /// </summary>
-        [DataMember(Name = "dependencies", Order = 306)]
+        [JsonPropertyName("dependencies")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Dependencies { get; set; }
 
         /// <summary>
         /// Proficiency needed for this content; expected values: 'Beginner', 'Expert'.
         /// </summary>
-        [DataMember(Name = "proficiencyLevel", Order = 307)]
+        [JsonPropertyName("proficiencyLevel")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> ProficiencyLevel { get; set; }
     }

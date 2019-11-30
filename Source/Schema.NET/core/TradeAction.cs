@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -36,13 +36,12 @@
     /// <summary>
     /// The act of participating in an exchange of goods and services for monetary compensation. An agent trades an object, product or service with a participant in exchange for a one time or periodic payment.
     /// </summary>
-    [DataContract]
     public partial class TradeAction : Action, ITradeAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TradeAction";
 
         /// <summary>
@@ -55,7 +54,7 @@
         /// &lt;li&gt;Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "price", Order = 206)]
+        [JsonPropertyName("price")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<decimal?, string> Price { get; set; }
 
@@ -63,14 +62,14 @@
         /// The currency of the price, or a price component when attached to &lt;a class="localLink" href="http://schema.org/PriceSpecification"&gt;PriceSpecification&lt;/a&gt; and its subtypes.&lt;br/&gt;&lt;br/&gt;
         /// Use standard formats: &lt;a href="http://en.wikipedia.org/wiki/ISO_4217"&gt;ISO 4217 currency format&lt;/a&gt; e.g. "USD"; &lt;a href="https://en.wikipedia.org/wiki/List_of_cryptocurrencies"&gt;Ticker symbol&lt;/a&gt; for cryptocurrencies e.g. "BTC"; well known names for &lt;a href="https://en.wikipedia.org/wiki/Local_exchange_trading_system"&gt;Local Exchange Tradings Systems&lt;/a&gt; (LETS) and other currency types e.g. "Ithaca HOUR".
         /// </summary>
-        [DataMember(Name = "priceCurrency", Order = 207)]
+        [JsonPropertyName("priceCurrency")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> PriceCurrency { get; set; }
 
         /// <summary>
         /// One or more detailed price specifications, indicating the unit price and delivery or payment charges.
         /// </summary>
-        [DataMember(Name = "priceSpecification", Order = 208)]
+        [JsonPropertyName("priceSpecification")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPriceSpecification> PriceSpecification { get; set; }
     }

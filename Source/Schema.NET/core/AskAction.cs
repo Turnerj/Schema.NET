@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -26,19 +26,18 @@
     /// &lt;li&gt;&lt;a class="localLink" href="http://schema.org/ReplyAction"&gt;ReplyAction&lt;/a&gt;: Appears generally as a response to AskAction.&lt;/li&gt;
     /// &lt;/ul&gt;
     /// </summary>
-    [DataContract]
     public partial class AskAction : CommunicateAction, IAskAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "AskAction";
 
         /// <summary>
         /// A sub property of object. A question.
         /// </summary>
-        [DataMember(Name = "question", Order = 406)]
+        [JsonPropertyName("question")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IQuestion> Question { get; set; }
     }

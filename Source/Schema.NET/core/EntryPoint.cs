@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -43,54 +43,53 @@
     /// <summary>
     /// An entry point, within some Web-based protocol.
     /// </summary>
-    [DataContract]
     public partial class EntryPoint : Intangible, IEntryPoint
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "EntryPoint";
 
         /// <summary>
         /// An application that can complete the request.
         /// </summary>
-        [DataMember(Name = "actionApplication", Order = 206)]
+        [JsonPropertyName("actionApplication")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ISoftwareApplication> ActionApplication { get; set; }
 
         /// <summary>
         /// The high level platform(s) where the Action can be performed for the given URL. To specify a specific application or operating system instance, use actionApplication.
         /// </summary>
-        [DataMember(Name = "actionPlatform", Order = 207)]
+        [JsonPropertyName("actionPlatform")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> ActionPlatform { get; set; }
 
         /// <summary>
         /// The supported content type(s) for an EntryPoint response.
         /// </summary>
-        [DataMember(Name = "contentType", Order = 208)]
+        [JsonPropertyName("contentType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> ContentType { get; set; }
 
         /// <summary>
         /// The supported encoding type(s) for an EntryPoint request.
         /// </summary>
-        [DataMember(Name = "encodingType", Order = 209)]
+        [JsonPropertyName("encodingType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> EncodingType { get; set; }
 
         /// <summary>
         /// An HTTP method that specifies the appropriate HTTP method for a request to an HTTP EntryPoint. Values are capitalized strings as used in HTTP.
         /// </summary>
-        [DataMember(Name = "httpMethod", Order = 210)]
+        [JsonPropertyName("httpMethod")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> HttpMethod { get; set; }
 
         /// <summary>
         /// An url template (RFC6570) that will be used to construct the target of the execution of the action.
         /// </summary>
-        [DataMember(Name = "urlTemplate", Order = 211)]
+        [JsonPropertyName("urlTemplate")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> UrlTemplate { get; set; }
     }

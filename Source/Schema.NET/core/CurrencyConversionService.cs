@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -14,13 +14,12 @@
     /// <summary>
     /// A service to convert funds from one currency to another currency.
     /// </summary>
-    [DataContract]
     public partial class CurrencyConversionService : FinancialProduct, ICurrencyConversionService
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "CurrencyConversionService";
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -14,13 +14,12 @@
     /// <summary>
     /// An image of a visual machine-readable code such as a barcode or QR code.
     /// </summary>
-    [DataContract]
     public partial class Barcode : ImageObject, IBarcode
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Barcode";
     }
 }

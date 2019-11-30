@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// Web applications.
     /// </summary>
-    [DataContract]
     public partial class WebApplication : SoftwareApplication, IWebApplication
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "WebApplication";
 
         /// <summary>
         /// Specifies browser requirements in human-readable text. For example, 'requires HTML5 support'.
         /// </summary>
-        [DataMember(Name = "browserRequirements", Order = 306)]
+        [JsonPropertyName("browserRequirements")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> BrowserRequirements { get; set; }
     }

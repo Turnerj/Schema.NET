@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -52,13 +52,12 @@
     /// <summary>
     /// Information about the engine of the vehicle. A vehicle can have multiple engines represented by multiple engine specification entities.
     /// </summary>
-    [DataContract]
     public partial class EngineSpecification : StructuredValue, IEngineSpecification
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "EngineSpecification";
 
         /// <summary>
@@ -67,7 +66,7 @@
         /// * Note 1: You can link to information about how the given value has been determined using the &lt;a class="localLink" href="http://schema.org/valueReference"&gt;valueReference&lt;/a&gt; property.
         /// * Note 2: You can use &lt;a class="localLink" href="http://schema.org/minValue"&gt;minValue&lt;/a&gt; and &lt;a class="localLink" href="http://schema.org/maxValue"&gt;maxValue&lt;/a&gt; to indicate ranges.
         /// </summary>
-        [DataMember(Name = "engineDisplacement", Order = 306)]
+        [JsonPropertyName("engineDisplacement")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IQuantitativeValue> EngineDisplacement { get; set; }
 
@@ -80,21 +79,21 @@
         /// &lt;li&gt;Note 3: You can use &lt;a class="localLink" href="http://schema.org/minValue"&gt;minValue&lt;/a&gt; and &lt;a class="localLink" href="http://schema.org/maxValue"&gt;maxValue&lt;/a&gt; to indicate ranges.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "enginePower", Order = 307)]
+        [JsonPropertyName("enginePower")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IQuantitativeValue> EnginePower { get; set; }
 
         /// <summary>
         /// The type of engine or engines powering the vehicle.
         /// </summary>
-        [DataMember(Name = "engineType", Order = 308)]
+        [JsonPropertyName("engineType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> EngineType { get; set; }
 
         /// <summary>
         /// The type of fuel suitable for the engine or engines of the vehicle. If the vehicle has only one engine, this property can be attached directly to the vehicle.
         /// </summary>
-        [DataMember(Name = "fuelType", Order = 309)]
+        [JsonPropertyName("fuelType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> FuelType { get; set; }
 
@@ -106,7 +105,7 @@
         /// &lt;li&gt;Note 2: You can use &lt;a class="localLink" href="http://schema.org/minValue"&gt;minValue&lt;/a&gt; and &lt;a class="localLink" href="http://schema.org/maxValue"&gt;maxValue&lt;/a&gt; to indicate ranges.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "torque", Order = 310)]
+        [JsonPropertyName("torque")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IQuantitativeValue> Torque { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// A TV episode which can be part of a series or season.
     /// </summary>
-    [DataContract]
     public partial class TVEpisode : Episode, ITVEpisode
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TVEpisode";
 
         /// <summary>
         /// The country of the principal offices of the production company or individual responsible for the movie or program.
         /// </summary>
-        [DataMember(Name = "countryOfOrigin", Order = 306)]
+        [JsonPropertyName("countryOfOrigin")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ICountry> CountryOfOrigin { get; set; }
 
         /// <summary>
         /// Languages in which subtitles/captions are available, in &lt;a href="http://tools.ietf.org/html/bcp47"&gt;IETF BCP 47 standard format&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "subtitleLanguage", Order = 307)]
+        [JsonPropertyName("subtitleLanguage")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<ILanguage, string> SubtitleLanguage { get; set; }
     }

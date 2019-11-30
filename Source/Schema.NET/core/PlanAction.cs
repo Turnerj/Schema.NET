@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of planning the execution of an event/task/action/reservation/plan to a future date.
     /// </summary>
-    [DataContract]
     public partial class PlanAction : OrganizeAction, IPlanAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "PlanAction";
 
         /// <summary>
         /// The time the object is scheduled to.
         /// </summary>
-        [DataMember(Name = "scheduledTime", Order = 306)]
+        [JsonPropertyName("scheduledTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DateTimeOffset?> ScheduledTime { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of expressing a preference from a set of options or a large or unbounded set of choices/options.
     /// </summary>
-    [DataContract]
     public partial class ChooseAction : AssessAction, IChooseAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ChooseAction";
 
         /// <summary>
         /// A sub property of object. The options subject to this action.
         /// </summary>
-        [DataMember(Name = "actionOption", Order = 306)]
+        [JsonPropertyName("actionOption")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, IThing> ActionOption { get; set; }
     }

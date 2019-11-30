@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of notifying someone of information pertinent to them, with no expectation of a response.
     /// </summary>
-    [DataContract]
     public partial class InformAction : CommunicateAction, IInformAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "InformAction";
 
         /// <summary>
         /// Upcoming or past event associated with this place, organization, or action.
         /// </summary>
-        [DataMember(Name = "event", Order = 406)]
+        [JsonPropertyName("event")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IEvent> Event { get; set; }
     }

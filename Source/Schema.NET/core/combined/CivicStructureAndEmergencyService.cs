@@ -1,26 +1,25 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// See CivicStructure, EmergencyService for more information.
     /// </summary>
-    public partial interface ICivicStructureAndEmergencyService : IEmergencyService, ICivicStructure
+    public partial interface ICivicStructureAndEmergencyService : ICivicStructure, IEmergencyService
     {
     }
 
     /// <summary>
     /// See CivicStructure, EmergencyService for more information.
     /// </summary>
-    [DataContract]
     public abstract partial class CivicStructureAndEmergencyService : LocalBusinessAndPlace, ICivicStructureAndEmergencyService
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "CivicStructureAndEmergencyService";
 
         /// <summary>
@@ -32,7 +31,7 @@
         /// &lt;li&gt;If a business is open 7 days a week, then it can be specified as &lt;code&gt;&amp;lt;time itemprop=&amp;quot;openingHours&amp;quot; datetime=&amp;quot;Mo-Su&amp;quot;&amp;gt;Monday through Sunday, all day&amp;lt;/time&amp;gt;&lt;/code&gt;.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "openingHours", Order = 306)]
+        [JsonPropertyName("openingHours")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<string> OpeningHours { get; set; }
     }

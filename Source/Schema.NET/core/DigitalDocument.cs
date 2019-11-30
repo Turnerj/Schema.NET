@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// An electronic file or document.
     /// </summary>
-    [DataContract]
     public partial class DigitalDocument : CreativeWork, IDigitalDocument
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "DigitalDocument";
 
         /// <summary>
         /// A permission related to the access to this document (e.g. permission to read or write an electronic document). For a public document, specify a grantee with an Audience with audienceType equal to "public".
         /// </summary>
-        [DataMember(Name = "hasDigitalDocumentPermission", Order = 206)]
+        [JsonPropertyName("hasDigitalDocumentPermission")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDigitalDocumentPermission> HasDigitalDocumentPermission { get; set; }
     }

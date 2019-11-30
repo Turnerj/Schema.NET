@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -73,96 +73,95 @@
     /// <summary>
     /// The act of participating in exertive activity for the purposes of improving health and fitness.
     /// </summary>
-    [DataContract]
     public partial class ExerciseAction : PlayAction, IExerciseAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ExerciseAction";
 
         /// <summary>
         /// A sub property of instrument. The diet used in this action.
         /// </summary>
-        [DataMember(Name = "diet", Order = 306)]
+        [JsonPropertyName("diet")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDiet> Diet { get; set; }
 
         /// <summary>
         /// The distance travelled, e.g. exercising or travelling.
         /// </summary>
-        [DataMember(Name = "distance", Order = 307)]
+        [JsonPropertyName("distance")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Distance { get; set; }
 
         /// <summary>
         /// A sub property of location. The course where this action was taken.
         /// </summary>
-        [DataMember(Name = "exerciseCourse", Order = 308)]
+        [JsonPropertyName("exerciseCourse")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> ExerciseCourse { get; set; }
 
         /// <summary>
         /// A sub property of instrument. The exercise plan used on this action.
         /// </summary>
-        [DataMember(Name = "exercisePlan", Order = 309)]
+        [JsonPropertyName("exercisePlan")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IExercisePlan> ExercisePlan { get; set; }
 
         /// <summary>
         /// A sub property of instrument. The diet used in this action.
         /// </summary>
-        [DataMember(Name = "exerciseRelatedDiet", Order = 310)]
+        [JsonPropertyName("exerciseRelatedDiet")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDiet> ExerciseRelatedDiet { get; set; }
 
         /// <summary>
         /// Type(s) of exercise or activity, such as strength training, flexibility training, aerobics, cardiac rehabilitation, etc.
         /// </summary>
-        [DataMember(Name = "exerciseType", Order = 311)]
+        [JsonPropertyName("exerciseType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> ExerciseType { get; set; }
 
         /// <summary>
         /// A sub property of location. The original location of the object or the agent before the action.
         /// </summary>
-        [DataMember(Name = "fromLocation", Order = 312)]
+        [JsonPropertyName("fromLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> FromLocation { get; set; }
 
         /// <summary>
         /// A sub property of participant. The opponent on this action.
         /// </summary>
-        [DataMember(Name = "opponent", Order = 313)]
+        [JsonPropertyName("opponent")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPerson> Opponent { get; set; }
 
         /// <summary>
         /// A sub property of location. The sports activity location where this action occurred.
         /// </summary>
-        [DataMember(Name = "sportsActivityLocation", Order = 314)]
+        [JsonPropertyName("sportsActivityLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ISportsActivityLocation> SportsActivityLocation { get; set; }
 
         /// <summary>
         /// A sub property of location. The sports event where this action occurred.
         /// </summary>
-        [DataMember(Name = "sportsEvent", Order = 315)]
+        [JsonPropertyName("sportsEvent")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ISportsEvent> SportsEvent { get; set; }
 
         /// <summary>
         /// A sub property of participant. The sports team that participated on this action.
         /// </summary>
-        [DataMember(Name = "sportsTeam", Order = 316)]
+        [JsonPropertyName("sportsTeam")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ISportsTeam> SportsTeam { get; set; }
 
         /// <summary>
         /// A sub property of location. The final location of the object or the agent after the action.
         /// </summary>
-        [DataMember(Name = "toLocation", Order = 317)]
+        [JsonPropertyName("toLocation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPlace> ToLocation { get; set; }
     }

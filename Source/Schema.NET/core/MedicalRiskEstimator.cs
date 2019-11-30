@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// Any rule set or interactive tool for estimating the risk of developing a complication or condition.
     /// </summary>
-    [DataContract]
     public partial class MedicalRiskEstimator : MedicalEntity, IMedicalRiskEstimator
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "MedicalRiskEstimator";
 
         /// <summary>
         /// The condition, complication, or symptom whose risk is being estimated.
         /// </summary>
-        [DataMember(Name = "estimatesRiskOf", Order = 206)]
+        [JsonPropertyName("estimatesRiskOf")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IMedicalEntity> EstimatesRiskOf { get; set; }
 
         /// <summary>
         /// A modifiable or non-modifiable risk factor included in the calculation, e.g. age, coexisting condition.
         /// </summary>
-        [DataMember(Name = "includedRiskFactor", Order = 207)]
+        [JsonPropertyName("includedRiskFactor")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IMedicalRiskFactor> IncludedRiskFactor { get; set; }
     }

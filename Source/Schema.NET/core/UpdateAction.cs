@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of managing by changing/editing the state of the object.
     /// </summary>
-    [DataContract]
     public partial class UpdateAction : Action, IUpdateAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "UpdateAction";
 
         /// <summary>
         /// A sub property of object. The collection target of the action.
         /// </summary>
-        [DataMember(Name = "targetCollection", Order = 206)]
+        [JsonPropertyName("targetCollection")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IThing> TargetCollection { get; set; }
     }

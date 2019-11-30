@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -14,19 +14,18 @@
     /// <summary>
     /// An educational organization.
     /// </summary>
-    [DataContract]
     public partial class EducationalOrganization : Organization, IEducationalOrganization
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "EducationalOrganization";
 
         /// <summary>
         /// Alumni of an organization.
         /// </summary>
-        [DataMember(Name = "alumni", Order = 206)]
+        [JsonPropertyName("alumni")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<IPerson> Alumni { get; set; }
     }

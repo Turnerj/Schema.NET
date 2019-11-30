@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// A single feed providing structured information about one or more entities or topics.
     /// </summary>
-    [DataContract]
     public partial class DataFeed : Dataset, IDataFeed
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "DataFeed";
 
         /// <summary>
         /// An item within in a data feed. Data feeds may have many elements.
         /// </summary>
-        [DataMember(Name = "dataFeedElement", Order = 306)]
+        [JsonPropertyName("dataFeedElement")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IDataFeedItem, string, IThing> DataFeedElement { get; set; }
     }

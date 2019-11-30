@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -28,33 +28,32 @@
     /// <summary>
     /// The act of producing/preparing food.
     /// </summary>
-    [DataContract]
     public partial class CookAction : CreateAction, ICookAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "CookAction";
 
         /// <summary>
         /// A sub property of location. The specific food establishment where the action occurred.
         /// </summary>
-        [DataMember(Name = "foodEstablishment", Order = 306)]
+        [JsonPropertyName("foodEstablishment")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IFoodEstablishment, IPlace> FoodEstablishment { get; set; }
 
         /// <summary>
         /// A sub property of location. The specific food event where the action occurred.
         /// </summary>
-        [DataMember(Name = "foodEvent", Order = 307)]
+        [JsonPropertyName("foodEvent")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IFoodEvent> FoodEvent { get; set; }
 
         /// <summary>
         /// A sub property of instrument. The recipe/instructions used to perform the action.
         /// </summary>
-        [DataMember(Name = "recipe", Order = 308)]
+        [JsonPropertyName("recipe")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IRecipe> Recipe { get; set; }
     }

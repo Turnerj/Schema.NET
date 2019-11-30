@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -47,33 +47,32 @@
     /// <summary>
     /// A body of structured information describing some topic(s) of interest.
     /// </summary>
-    [DataContract]
     public partial class Dataset : CreativeWork, IDataset
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Dataset";
 
         /// <summary>
         /// A downloadable form of this dataset, at a specific location, in a specific format.
         /// </summary>
-        [DataMember(Name = "distribution", Order = 206)]
+        [JsonPropertyName("distribution")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDataDownload> Distribution { get; set; }
 
         /// <summary>
         /// A data catalog which contains this dataset.
         /// </summary>
-        [DataMember(Name = "includedInDataCatalog", Order = 207)]
+        [JsonPropertyName("includedInDataCatalog")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDataCatalog> IncludedInDataCatalog { get; set; }
 
         /// <summary>
         /// The International Standard Serial Number (ISSN) that identifies this serial publication. You can repeat this property to identify different formats of, or the linking ISSN (ISSN-L) for, this serial publication.
         /// </summary>
-        [DataMember(Name = "issn", Order = 208)]
+        [JsonPropertyName("issn")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Issn { get; set; }
 
@@ -84,21 +83,21 @@
         /// If the &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; is "depression rating", the &lt;a class="localLink" href="http://schema.org/measurementTechnique"&gt;measurementTechnique&lt;/a&gt; could be "Zung Scale" or "HAM-D" or "Beck Depression Inventory".&lt;br/&gt;&lt;br/&gt;
         /// If there are several &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; properties recorded for some given data object, use a &lt;a class="localLink" href="http://schema.org/PropertyValue"&gt;PropertyValue&lt;/a&gt; for each &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; and attach the corresponding &lt;a class="localLink" href="http://schema.org/measurementTechnique"&gt;measurementTechnique&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "measurementTechnique", Order = 209)]
+        [JsonPropertyName("measurementTechnique")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> MeasurementTechnique { get; set; }
 
         /// <summary>
         /// The variableMeasured property can indicate (repeated as necessary) the  variables that are measured in some dataset, either described as text or as pairs of identifier and description using PropertyValue.
         /// </summary>
-        [DataMember(Name = "variableMeasured", Order = 210)]
+        [JsonPropertyName("variableMeasured")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IPropertyValue, string> VariableMeasured { get; set; }
 
         /// <summary>
         /// Originally named &lt;a class="localLink" href="http://schema.org/variablesMeasured"&gt;variablesMeasured&lt;/a&gt;, The &lt;a class="localLink" href="http://schema.org/variableMeasured"&gt;variableMeasured&lt;/a&gt; property can indicate (repeated as necessary) the  variables that are measured in some dataset, either described as text or as pairs of identifier and description using PropertyValue.
         /// </summary>
-        [DataMember(Name = "variablesMeasured", Order = 211)]
+        [JsonPropertyName("variablesMeasured")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IPropertyValue, string> VariablesMeasured { get; set; }
     }

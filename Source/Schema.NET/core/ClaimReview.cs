@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// A fact-checking review of claims made (or reported) in some creative work (referenced via itemReviewed).
     /// </summary>
-    [DataContract]
     public partial class ClaimReview : Review, IClaimReview
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ClaimReview";
 
         /// <summary>
         /// A short summary of the specific claims reviewed in a ClaimReview.
         /// </summary>
-        [DataMember(Name = "claimReviewed", Order = 306)]
+        [JsonPropertyName("claimReviewed")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> ClaimReviewed { get; set; }
     }

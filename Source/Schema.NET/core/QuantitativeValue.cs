@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -56,41 +56,40 @@
     /// <summary>
     /// A point value or interval for product characteristics and other purposes.
     /// </summary>
-    [DataContract]
     public partial class QuantitativeValue : StructuredValue, IQuantitativeValue
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "QuantitativeValue";
 
         /// <summary>
         /// A property-value pair representing an additional characteristics of the entitity, e.g. a product feature or another characteristic for which there is no matching property in schema.org.&lt;br/&gt;&lt;br/&gt;
         /// Note: Publishers should be aware that applications designed to use specific schema.org properties (e.g. http://schema.org/width, http://schema.org/color, http://schema.org/gtin13, ...) will typically expect such data to be provided using those properties, rather than using the generic property/value mechanism.
         /// </summary>
-        [DataMember(Name = "additionalProperty", Order = 306)]
+        [JsonPropertyName("additionalProperty")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPropertyValue> AdditionalProperty { get; set; }
 
         /// <summary>
         /// The upper value of some characteristic or property.
         /// </summary>
-        [DataMember(Name = "maxValue", Order = 307)]
+        [JsonPropertyName("maxValue")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<double?> MaxValue { get; set; }
 
         /// <summary>
         /// The lower value of some characteristic or property.
         /// </summary>
-        [DataMember(Name = "minValue", Order = 308)]
+        [JsonPropertyName("minValue")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<double?> MinValue { get; set; }
 
         /// <summary>
         /// The unit of measurement given using the UN/CEFACT Common Code (3 characters) or a URL. Other codes than the UN/CEFACT Common Code may be used with a prefix followed by a colon.
         /// </summary>
-        [DataMember(Name = "unitCode", Order = 309)]
+        [JsonPropertyName("unitCode")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> UnitCode { get; set; }
 
@@ -98,7 +97,7 @@
         /// A string or text indicating the unit of measurement. Useful if you cannot provide a standard unit code for
         /// &lt;a href='unitCode'&gt;unitCode&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "unitText", Order = 310)]
+        [JsonPropertyName("unitText")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> UnitText { get; set; }
 
@@ -111,14 +110,14 @@
         /// &lt;li&gt;Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "value", Order = 311)]
+        [JsonPropertyName("value")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<bool?, double?, IStructuredValue, string> Value { get; set; }
 
         /// <summary>
         /// A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
         /// </summary>
-        [DataMember(Name = "valueReference", Order = 312)]
+        [JsonPropertyName("valueReference")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IPropertyValue, IQuantitativeValue, IStructuredValue> ValueReference { get; set; }
     }

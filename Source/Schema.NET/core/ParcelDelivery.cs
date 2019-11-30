@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -68,89 +68,88 @@
     /// <summary>
     /// The delivery of a parcel either via the postal service or a commercial service.
     /// </summary>
-    [DataContract]
     public partial class ParcelDelivery : Intangible, IParcelDelivery
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "ParcelDelivery";
 
         /// <summary>
         /// Destination address.
         /// </summary>
-        [DataMember(Name = "deliveryAddress", Order = 206)]
+        [JsonPropertyName("deliveryAddress")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPostalAddress> DeliveryAddress { get; set; }
 
         /// <summary>
         /// New entry added as the package passes through each leg of its journey (from shipment to final delivery).
         /// </summary>
-        [DataMember(Name = "deliveryStatus", Order = 207)]
+        [JsonPropertyName("deliveryStatus")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IDeliveryEvent> DeliveryStatus { get; set; }
 
         /// <summary>
         /// The earliest date the package may arrive.
         /// </summary>
-        [DataMember(Name = "expectedArrivalFrom", Order = 208)]
+        [JsonPropertyName("expectedArrivalFrom")]
         [JsonConverter(typeof(DateTimeToIso8601DateValuesJsonConverter))]
         public Values<int?, DateTime?, DateTimeOffset?> ExpectedArrivalFrom { get; set; }
 
         /// <summary>
         /// The latest date the package may arrive.
         /// </summary>
-        [DataMember(Name = "expectedArrivalUntil", Order = 209)]
+        [JsonPropertyName("expectedArrivalUntil")]
         [JsonConverter(typeof(DateTimeToIso8601DateValuesJsonConverter))]
         public Values<int?, DateTime?, DateTimeOffset?> ExpectedArrivalUntil { get; set; }
 
         /// <summary>
         /// Method used for delivery or shipping.
         /// </summary>
-        [DataMember(Name = "hasDeliveryMethod", Order = 210)]
+        [JsonPropertyName("hasDeliveryMethod")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<DeliveryMethod?> HasDeliveryMethod { get; set; }
 
         /// <summary>
         /// Item(s) being shipped.
         /// </summary>
-        [DataMember(Name = "itemShipped", Order = 211)]
+        [JsonPropertyName("itemShipped")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IProduct> ItemShipped { get; set; }
 
         /// <summary>
         /// Shipper's address.
         /// </summary>
-        [DataMember(Name = "originAddress", Order = 212)]
+        [JsonPropertyName("originAddress")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IPostalAddress> OriginAddress { get; set; }
 
         /// <summary>
         /// The overall order the items in this delivery were included in.
         /// </summary>
-        [DataMember(Name = "partOfOrder", Order = 213)]
+        [JsonPropertyName("partOfOrder")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IOrder> PartOfOrder { get; set; }
 
         /// <summary>
         /// The service provider, service operator, or service performer; the goods producer. Another party (a seller) may offer those services or goods on behalf of the provider. A provider may also serve as the seller.
         /// </summary>
-        [DataMember(Name = "provider", Order = 214)]
+        [JsonPropertyName("provider")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IOrganization, IPerson> Provider { get; set; }
 
         /// <summary>
         /// Shipper tracking number.
         /// </summary>
-        [DataMember(Name = "trackingNumber", Order = 215)]
+        [JsonPropertyName("trackingNumber")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> TrackingNumber { get; set; }
 
         /// <summary>
         /// Tracking url for the parcel delivery.
         /// </summary>
-        [DataMember(Name = "trackingUrl", Order = 216)]
+        [JsonPropertyName("trackingUrl")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<Uri> TrackingUrl { get; set; }
     }

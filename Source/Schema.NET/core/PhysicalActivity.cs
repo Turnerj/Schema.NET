@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -33,40 +33,39 @@
     /// <summary>
     /// Any bodily activity that enhances or maintains physical fitness and overall health and wellness. Includes activity that is part of daily living and routine, structured exercise, and exercise prescribed as part of a medical treatment or recovery plan.
     /// </summary>
-    [DataContract]
     public partial class PhysicalActivity : LifestyleModification, IPhysicalActivity
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "PhysicalActivity";
 
         /// <summary>
         /// The anatomy of the underlying organ system or structures associated with this entity.
         /// </summary>
-        [DataMember(Name = "associatedAnatomy", Order = 306)]
+        [JsonPropertyName("associatedAnatomy")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IAnatomicalStructure, IAnatomicalSystem, ISuperficialAnatomy> AssociatedAnatomy { get; set; }
 
         /// <summary>
         /// A category for the item. Greater signs or slashes can be used to informally indicate a category hierarchy.
         /// </summary>
-        [DataMember(Name = "category", Order = 307)]
+        [JsonPropertyName("category")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<PhysicalActivityCategory?, string, IThing> Category { get; set; }
 
         /// <summary>
         /// The characteristics of associated patients, such as age, gender, race etc.
         /// </summary>
-        [DataMember(Name = "epidemiology", Order = 308)]
+        [JsonPropertyName("epidemiology")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Epidemiology { get; set; }
 
         /// <summary>
         /// Changes in the normal mechanical, physical, and biochemical functions that are associated with this activity or condition.
         /// </summary>
-        [DataMember(Name = "pathophysiology", Order = 309)]
+        [JsonPropertyName("pathophysiology")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Pathophysiology { get; set; }
     }

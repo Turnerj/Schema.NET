@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -45,54 +45,53 @@
     /// A reservation for lodging at a hotel, motel, inn, etc.&lt;br/&gt;&lt;br/&gt;
     /// Note: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations.
     /// </summary>
-    [DataContract]
     public partial class LodgingReservation : Reservation, ILodgingReservation
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "LodgingReservation";
 
         /// <summary>
         /// The earliest someone may check into a lodging establishment.
         /// </summary>
-        [DataMember(Name = "checkinTime", Order = 306)]
+        [JsonPropertyName("checkinTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<DateTimeOffset?, TimeSpan?> CheckinTime { get; set; }
 
         /// <summary>
         /// The latest someone may check out of a lodging establishment.
         /// </summary>
-        [DataMember(Name = "checkoutTime", Order = 307)]
+        [JsonPropertyName("checkoutTime")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<DateTimeOffset?, TimeSpan?> CheckoutTime { get; set; }
 
         /// <summary>
         /// A full description of the lodging unit.
         /// </summary>
-        [DataMember(Name = "lodgingUnitDescription", Order = 308)]
+        [JsonPropertyName("lodgingUnitDescription")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> LodgingUnitDescription { get; set; }
 
         /// <summary>
         /// Textual description of the unit type (including suite vs. room, size of bed, etc.).
         /// </summary>
-        [DataMember(Name = "lodgingUnitType", Order = 309)]
+        [JsonPropertyName("lodgingUnitType")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> LodgingUnitType { get; set; }
 
         /// <summary>
         /// The number of adults staying in the unit.
         /// </summary>
-        [DataMember(Name = "numAdults", Order = 310)]
+        [JsonPropertyName("numAdults")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<int?, IQuantitativeValue> NumAdults { get; set; }
 
         /// <summary>
         /// The number of children staying in the unit.
         /// </summary>
-        [DataMember(Name = "numChildren", Order = 311)]
+        [JsonPropertyName("numChildren")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<int?, IQuantitativeValue> NumChildren { get; set; }
     }

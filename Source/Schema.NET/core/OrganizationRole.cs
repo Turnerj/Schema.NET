@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// A subclass of Role used to describe roles within organizations.
     /// </summary>
-    [DataContract]
     public partial class OrganizationRole : Role, IOrganizationRole
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "OrganizationRole";
 
         /// <summary>
         /// A number associated with a role in an organization, for example, the number on an athlete's jersey.
         /// </summary>
-        [DataMember(Name = "numberedPosition", Order = 306)]
+        [JsonPropertyName("numberedPosition")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<double?> NumberedPosition { get; set; }
     }

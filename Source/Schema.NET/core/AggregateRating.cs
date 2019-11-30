@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -28,33 +28,32 @@
     /// <summary>
     /// The average rating based on multiple ratings or reviews.
     /// </summary>
-    [DataContract]
     public partial class AggregateRating : Rating, IAggregateRating
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "AggregateRating";
 
         /// <summary>
         /// The item that is being reviewed/rated.
         /// </summary>
-        [DataMember(Name = "itemReviewed", Order = 306)]
+        [JsonPropertyName("itemReviewed")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IThing> ItemReviewed { get; set; }
 
         /// <summary>
         /// The count of total number of ratings.
         /// </summary>
-        [DataMember(Name = "ratingCount", Order = 307)]
+        [JsonPropertyName("ratingCount")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<int?> RatingCount { get; set; }
 
         /// <summary>
         /// The count of total number of reviews.
         /// </summary>
-        [DataMember(Name = "reviewCount", Order = 308)]
+        [JsonPropertyName("reviewCount")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<int?> ReviewCount { get; set; }
     }

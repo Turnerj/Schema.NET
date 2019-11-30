@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// The act of organizing tasks/objects/events by associating resources to it.
     /// </summary>
-    [DataContract]
     public partial class AllocateAction : OrganizeAction, IAllocateAction
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "AllocateAction";
 
         /// <summary>
         /// A goal towards an action is taken. Can be concrete or abstract.
         /// </summary>
-        [DataMember(Name = "purpose", Order = 306)]
+        [JsonPropertyName("purpose")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<MedicalDevicePurpose?, IThing> Purpose { get; set; }
     }

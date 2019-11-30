@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -64,61 +64,60 @@
     /// <summary>
     /// A web page. Every web page is implicitly assumed to be declared to be of type WebPage, so the various properties about that webpage, such as &lt;code&gt;breadcrumb&lt;/code&gt; may be used. We recommend explicit declaration if these properties are specified, but if they are found outside of an itemscope, they will be assumed to be about the page.
     /// </summary>
-    [DataContract]
     public partial class WebPage : CreativeWork, IWebPage
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "WebPage";
 
         /// <summary>
         /// A set of links that can help a user understand and navigate a website hierarchy.
         /// </summary>
-        [DataMember(Name = "breadcrumb", Order = 206)]
+        [JsonPropertyName("breadcrumb")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IBreadcrumbList, string> Breadcrumb { get; set; }
 
         /// <summary>
         /// Date on which the content on this web page was last reviewed for accuracy and/or completeness.
         /// </summary>
-        [DataMember(Name = "lastReviewed", Order = 207)]
+        [JsonPropertyName("lastReviewed")]
         [JsonConverter(typeof(DateTimeToIso8601DateValuesJsonConverter))]
         public Values<int?, DateTime?> LastReviewed { get; set; }
 
         /// <summary>
         /// Indicates if this web page element is the main subject of the page.
         /// </summary>
-        [DataMember(Name = "mainContentOfPage", Order = 208)]
+        [JsonPropertyName("mainContentOfPage")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IWebPageElement> MainContentOfPage { get; set; }
 
         /// <summary>
         /// Indicates the main image on the page.
         /// </summary>
-        [DataMember(Name = "primaryImageOfPage", Order = 209)]
+        [JsonPropertyName("primaryImageOfPage")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IImageObject> PrimaryImageOfPage { get; set; }
 
         /// <summary>
         /// A link related to this web page, for example to other related web pages.
         /// </summary>
-        [DataMember(Name = "relatedLink", Order = 210)]
+        [JsonPropertyName("relatedLink")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<Uri> RelatedLink { get; set; }
 
         /// <summary>
         /// People or organizations that have reviewed the content on this web page for accuracy and/or completeness.
         /// </summary>
-        [DataMember(Name = "reviewedBy", Order = 211)]
+        [JsonPropertyName("reviewedBy")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IOrganization, IPerson> ReviewedBy { get; set; }
 
         /// <summary>
         /// One of the more significant URLs on the page. Typically, these are the non-navigation links that are clicked on the most.
         /// </summary>
-        [DataMember(Name = "significantLink", Order = 212)]
+        [JsonPropertyName("significantLink")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<Uri> SignificantLink { get; set; }
 
@@ -131,14 +130,14 @@
         /// For more sophisticated markup of speakable sections beyond simple ID references, either CSS selectors or XPath expressions to pick out document section(s) as speakable. For this
         /// we define a supporting type, &lt;a class="localLink" href="http://schema.org/SpeakableSpecification"&gt;SpeakableSpecification&lt;/a&gt;  which is defined to be a possible value of the &lt;em&gt;speakable&lt;/em&gt; property.
         /// </summary>
-        [DataMember(Name = "speakable", Order = 213)]
+        [JsonPropertyName("speakable")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<ISpeakableSpecification, Uri> Speakable { get; set; }
 
         /// <summary>
         /// One of the domain specialities to which this web page's content applies.
         /// </summary>
-        [DataMember(Name = "specialty", Order = 214)]
+        [JsonPropertyName("specialty")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<Specialty?> Specialty { get; set; }
     }

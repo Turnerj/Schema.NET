@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -53,68 +53,67 @@
     /// <summary>
     /// The geographic shape of a place. A GeoShape can be described using several properties whose values are based on latitude/longitude pairs. Either whitespace or commas can be used to separate latitude and longitude; whitespace should be used when writing a list of several such points.
     /// </summary>
-    [DataContract]
     public partial class GeoShape : StructuredValue, IGeoShape
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "GeoShape";
 
         /// <summary>
         /// Physical address of the item.
         /// </summary>
-        [DataMember(Name = "address", Order = 306)]
+        [JsonPropertyName("address")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IPostalAddress, string> Address { get; set; }
 
         /// <summary>
         /// The country. For example, USA. You can also provide the two-letter &lt;a href="http://en.wikipedia.org/wiki/ISO_3166-1"&gt;ISO 3166-1 alpha-2 country code&lt;/a&gt;.
         /// </summary>
-        [DataMember(Name = "addressCountry", Order = 307)]
+        [JsonPropertyName("addressCountry")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<ICountry, string> AddressCountry { get; set; }
 
         /// <summary>
         /// A box is the area enclosed by the rectangle formed by two points. The first point is the lower corner, the second point is the upper corner. A box is expressed as two points separated by a space character.
         /// </summary>
-        [DataMember(Name = "box", Order = 308)]
+        [JsonPropertyName("box")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Box { get; set; }
 
         /// <summary>
         /// A circle is the circular region of a specified radius centered at a specified latitude and longitude. A circle is expressed as a pair followed by a radius in meters.
         /// </summary>
-        [DataMember(Name = "circle", Order = 309)]
+        [JsonPropertyName("circle")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Circle { get; set; }
 
         /// <summary>
         /// The elevation of a location (&lt;a href="https://en.wikipedia.org/wiki/World_Geodetic_System"&gt;WGS 84&lt;/a&gt;). Values may be of the form 'NUMBER UNIT&lt;em&gt;OF&lt;/em&gt;MEASUREMENT' (e.g., '1,000 m', '3,200 ft') while numbers alone should be assumed to be a value in meters.
         /// </summary>
-        [DataMember(Name = "elevation", Order = 310)]
+        [JsonPropertyName("elevation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<double?, string> Elevation { get; set; }
 
         /// <summary>
         /// A line is a point-to-point path consisting of two or more points. A line is expressed as a series of two or more point objects separated by space.
         /// </summary>
-        [DataMember(Name = "line", Order = 311)]
+        [JsonPropertyName("line")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Line { get; set; }
 
         /// <summary>
         /// A polygon is the area enclosed by a point-to-point path for which the starting and ending points are the same. A polygon is expressed as a series of four or more space delimited points where the first and final points are identical.
         /// </summary>
-        [DataMember(Name = "polygon", Order = 312)]
+        [JsonPropertyName("polygon")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Polygon { get; set; }
 
         /// <summary>
         /// The postal code. For example, 94043.
         /// </summary>
-        [DataMember(Name = "postalCode", Order = 313)]
+        [JsonPropertyName("postalCode")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> PostalCode { get; set; }
     }

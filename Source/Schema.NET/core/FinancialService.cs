@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// Financial services business.
     /// </summary>
-    [DataContract]
     public partial class FinancialService : LocalBusiness, IFinancialService
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "FinancialService";
 
         /// <summary>
         /// Description of fees, commissions, and other terms applied either to a class of financial product, or by a financial service organization.
         /// </summary>
-        [DataMember(Name = "feesAndCommissionsSpecification", Order = 306)]
+        [JsonPropertyName("feesAndCommissionsSpecification")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<string, Uri> FeesAndCommissionsSpecification { get; set; }
     }

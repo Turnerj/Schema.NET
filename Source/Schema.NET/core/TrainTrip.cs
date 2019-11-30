@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -43,54 +43,53 @@
     /// <summary>
     /// A trip on a commercial train line.
     /// </summary>
-    [DataContract]
     public partial class TrainTrip : Trip, ITrainTrip
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "TrainTrip";
 
         /// <summary>
         /// The platform where the train arrives.
         /// </summary>
-        [DataMember(Name = "arrivalPlatform", Order = 306)]
+        [JsonPropertyName("arrivalPlatform")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> ArrivalPlatform { get; set; }
 
         /// <summary>
         /// The station where the train trip ends.
         /// </summary>
-        [DataMember(Name = "arrivalStation", Order = 307)]
+        [JsonPropertyName("arrivalStation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ITrainStation> ArrivalStation { get; set; }
 
         /// <summary>
         /// The platform from which the train departs.
         /// </summary>
-        [DataMember(Name = "departurePlatform", Order = 308)]
+        [JsonPropertyName("departurePlatform")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> DeparturePlatform { get; set; }
 
         /// <summary>
         /// The station from which the train departs.
         /// </summary>
-        [DataMember(Name = "departureStation", Order = 309)]
+        [JsonPropertyName("departureStation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<ITrainStation> DepartureStation { get; set; }
 
         /// <summary>
         /// The name of the train (e.g. The Orient Express).
         /// </summary>
-        [DataMember(Name = "trainName", Order = 310)]
+        [JsonPropertyName("trainName")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> TrainName { get; set; }
 
         /// <summary>
         /// The unique identifier for the train.
         /// </summary>
-        [DataMember(Name = "trainNumber", Order = 311)]
+        [JsonPropertyName("trainNumber")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> TrainNumber { get; set; }
     }

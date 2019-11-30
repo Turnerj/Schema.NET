@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,26 +23,25 @@
     /// <summary>
     /// A blog.
     /// </summary>
-    [DataContract]
     public partial class Blog : CreativeWork, IBlog
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Blog";
 
         /// <summary>
         /// A posting that is part of this blog.
         /// </summary>
-        [DataMember(Name = "blogPost", Order = 206)]
+        [JsonPropertyName("blogPost")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IBlogPosting> BlogPost { get; set; }
 
         /// <summary>
         /// The International Standard Serial Number (ISSN) that identifies this serial publication. You can repeat this property to identify different formats of, or the linking ISSN (ISSN-L) for, this serial publication.
         /// </summary>
-        [DataMember(Name = "issn", Order = 207)]
+        [JsonPropertyName("issn")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Issn { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -18,19 +18,18 @@
     /// <summary>
     /// A guideline recommendation that is regarded as efficacious and where quality of the data supporting the recommendation is sound.
     /// </summary>
-    [DataContract]
     public partial class MedicalGuidelineRecommendation : MedicalGuideline, IMedicalGuidelineRecommendation
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "MedicalGuidelineRecommendation";
 
         /// <summary>
         /// Strength of the guideline's recommendation (e.g. 'class I').
         /// </summary>
-        [DataMember(Name = "recommendationStrength", Order = 306)]
+        [JsonPropertyName("recommendationStrength")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> RecommendationStrength { get; set; }
     }

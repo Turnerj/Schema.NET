@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -29,19 +29,18 @@
     /// <summary>
     /// A bus (also omnibus or autobus) is a road vehicle designed to carry passengers. Coaches are luxury busses, usually in service for long distance travel.
     /// </summary>
-    [DataContract]
     public partial class BusOrCoach : Vehicle, IBusOrCoach
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "BusOrCoach";
 
         /// <summary>
         /// The ACRISS Car Classification Code is a code used by many car rental companies, for classifying vehicles. ACRISS stands for Association of Car Rental Industry Systems and Standards.
         /// </summary>
-        [DataMember(Name = "acrissCode", Order = 306)]
+        [JsonPropertyName("acrissCode")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> AcrissCode { get; set; }
 
@@ -54,7 +53,7 @@
         /// &lt;li&gt;Note 3: Note that you can use &lt;a class="localLink" href="http://schema.org/minValue"&gt;minValue&lt;/a&gt; and &lt;a class="localLink" href="http://schema.org/maxValue"&gt;maxValue&lt;/a&gt; to indicate ranges.&lt;/li&gt;
         /// &lt;/ul&gt;
         /// </summary>
-        [DataMember(Name = "roofLoad", Order = 307)]
+        [JsonPropertyName("roofLoad")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IQuantitativeValue> RoofLoad { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -33,40 +33,39 @@
     /// <summary>
     /// A brand is a name used by an organization or business person for labeling a product, product group, or similar.
     /// </summary>
-    [DataContract]
     public partial class Brand : Intangible, IBrand
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Brand";
 
         /// <summary>
         /// The overall rating, based on a collection of reviews or ratings, of the item.
         /// </summary>
-        [DataMember(Name = "aggregateRating", Order = 206)]
+        [JsonPropertyName("aggregateRating")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IAggregateRating> AggregateRating { get; set; }
 
         /// <summary>
         /// An associated logo.
         /// </summary>
-        [DataMember(Name = "logo", Order = 207)]
+        [JsonPropertyName("logo")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IImageObject, Uri> Logo { get; set; }
 
         /// <summary>
         /// A review of the item.
         /// </summary>
-        [DataMember(Name = "review", Order = 208)]
+        [JsonPropertyName("review")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IReview> Review { get; set; }
 
         /// <summary>
         /// A slogan or motto associated with the item.
         /// </summary>
-        [DataMember(Name = "slogan", Order = 209)]
+        [JsonPropertyName("slogan")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<string> Slogan { get; set; }
     }

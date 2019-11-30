@@ -1,7 +1,7 @@
 ﻿namespace Schema.NET
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Text.Json.Serialization;
 
     /// <summary>
@@ -23,33 +23,32 @@
     /// <summary>
     /// A doctor's office.
     /// </summary>
-    [DataContract]
     public partial class Physician : MedicalBusinessAndMedicalOrganization, IPhysician
     {
         /// <summary>
         /// Gets the name of the type as specified by schema.org.
         /// </summary>
-        [DataMember(Name = "@type", Order = 1)]
+        [JsonPropertyName("@type")]
         public override string Type => "Physician";
 
         /// <summary>
         /// A medical service available from this provider.
         /// </summary>
-        [DataMember(Name = "availableService", Order = 406)]
+        [JsonPropertyName("availableService")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public Values<IMedicalProcedure, IMedicalTest, IMedicalTherapy> AvailableService { get; set; }
 
         /// <summary>
         /// A hospital with which the physician or office is affiliated.
         /// </summary>
-        [DataMember(Name = "hospitalAffiliation", Order = 407)]
+        [JsonPropertyName("hospitalAffiliation")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public OneOrMany<IHospital> HospitalAffiliation { get; set; }
 
         /// <summary>
         /// A medical specialty of the provider.
         /// </summary>
-        [DataMember(Name = "medicalSpecialty", Order = 408)]
+        [JsonPropertyName("medicalSpecialty")]
         [JsonConverter(typeof(ValuesJsonConverter))]
         public override OneOrMany<MedicalSpecialty?> MedicalSpecialty { get; set; }
     }
