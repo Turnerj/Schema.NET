@@ -69,7 +69,7 @@ namespace Schema.NET
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
         public string ToString(JsonSerializerOptions serializerSettings) =>
-            RemoveAllButRootContext(JsonSerializer.Serialize(this, serializerSettings));
+            RemoveAllButRootContext(JsonSerializer.Serialize(this, this.GetType(), serializerSettings));
 
         private static string RemoveAllButRootContext(string json)
         {
