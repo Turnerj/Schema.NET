@@ -47,7 +47,6 @@ namespace Schema.NET
             var tokenType = reader.TokenType;
 
             var token = JsonDocument.ParseValue(ref reader).RootElement;
-            var count = token.GetArrayLength();
 
 #pragma warning disable CA1062 // Validate arguments of public methods
             if (mainType.GenericTypeArguments.Length == 1)
@@ -68,6 +67,7 @@ namespace Schema.NET
             {
                 if (tokenType == JsonTokenType.StartArray)
                 {
+                    var count = token.GetArrayLength();
                     var total = 0;
                     var items = new List<object>();
                     for (var i = mainType.GenericTypeArguments.Length - 1; i >= 0; i--)
