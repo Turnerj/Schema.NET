@@ -501,7 +501,7 @@ namespace Schema.NET
 
         private static string GetTypeNameFromToken(JsonElement token)
         {
-            if (token.TryGetProperty("@type", out var typeElement))
+            if (token.ValueKind == JsonValueKind.Object && token.TryGetProperty("@type", out var typeElement))
             {
                 return typeElement.GetString();
             }
