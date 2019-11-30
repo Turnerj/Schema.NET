@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Package References">
-    <PackageReference Include="System.Text.Json" Version="4.6.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.0-preview3.19551.4" />
   </ItemGroup>
 
   <ItemGroup Label="Analyzer Package References">
