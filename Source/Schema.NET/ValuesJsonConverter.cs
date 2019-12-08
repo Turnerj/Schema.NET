@@ -56,11 +56,11 @@ namespace Schema.NET
                 if (tokenType == JsonTokenType.StartArray)
                 {
                     var unwrappedType = type.GetUnderlyingTypeFromNullable();
-                    argument = ReadJsonArray(token, unwrappedType);
+                    argument = ReadJsonArray(token, unwrappedType, null, options);
                 }
                 else
                 {
-                    argument = ParseTokenArguments(token, tokenType, type);
+                    argument = ParseTokenArguments(token, tokenType, type, options);
                 }
             }
             else
@@ -75,7 +75,7 @@ namespace Schema.NET
                         var type = mainType.GenericTypeArguments[i];
                         var unwrappedType = type.GetUnderlyingTypeFromNullable();
                         // only read as many items as there are tokens left
-                        var args = ReadJsonArray(token, unwrappedType, count - total);
+                        var args = ReadJsonArray(token, unwrappedType, count - total, options);
 
                         if (args != null && args.Count > 0)
                         {
@@ -103,7 +103,7 @@ namespace Schema.NET
 
                         try
                         {
-                            var args = ParseTokenArguments(token, tokenType, type);
+                            var args = ParseTokenArguments(token, tokenType, type, options);
 
                             if (args != null)
                             {
@@ -211,7 +211,7 @@ namespace Schema.NET
             JsonSerializer.Serialize(writer, value, value?.GetType(), options);
         }
 
-        private static object ParseTokenArguments(JsonElement token, JsonTokenType tokenType, Type type)
+        private static object ParseTokenArguments(JsonElement token, JsonTokenType tokenType, Type type, JsonSerializerOptions options)
         {
             const string SCHEMA_ORG = "http://schema.org/";
             const int SCHEMA_ORG_LENGTH = 18; // equivalent to "http://schema.org/".Length
@@ -230,42 +230,42 @@ namespace Schema.NET
             {
                 if (tokenType == JsonTokenType.StartObject)
                 {
-                    args = ParseTokenObjectArguments(token, type, unwrappedType);
+                    args = ParseTokenObjectArguments(token, type, unwrappedType, options);
                 }
                 else
                 {
-                    args = ParseTokenValueArguments(token, tokenType, type, unwrappedType);
+                    args = ParseTokenValueArguments(token, tokenType, type, unwrappedType, options);
                 }
             }
 
             return args;
         }
 
-        private static object ParseTokenObjectArguments(JsonElement token, Type type, Type unwrappedType)
+        private static object ParseTokenObjectArguments(JsonElement token, Type type, Type unwrappedType, JsonSerializerOptions options)
         {
             object args = null;
             var typeName = GetTypeNameFromToken(token);
             if (string.IsNullOrEmpty(typeName))
             {
-                args = token.ToObject(unwrappedType);
+                args = token.ToObject(unwrappedType, options);
             }
             else if (typeName == type.Name)
             {
-                args = token.ToObject(type);
+                args = token.ToObject(type, options);
             }
             else
             {
                 var builtType = Type.GetType($"{NamespacePrefix}{typeName}");
                 if (builtType != null && type.GetTypeInfo().IsAssignableFrom(builtType.GetTypeInfo()))
                 {
-                    args = token.ToObject(builtType);
+                    args = token.ToObject(builtType, options);
                 }
             }
 
             return args;
         }
 
-        private static object ParseTokenValueArguments(JsonElement token, JsonTokenType tokenType, Type type, Type unwrappedType)
+        private static object ParseTokenValueArguments(JsonElement token, JsonTokenType tokenType, Type type, Type unwrappedType, JsonSerializerOptions options)
         {
             object args = null;
             if (unwrappedType.IsPrimitiveType())
@@ -336,7 +336,7 @@ namespace Schema.NET
                 // }
                 else
                 {
-                    args = token.ToObject(typeof(object));
+                    args = token.ToObject(typeof(object), options);
                 }
             }
             else if (unwrappedType == typeof(decimal))
@@ -426,7 +426,7 @@ namespace Schema.NET
                 {
                     if (!type.GetTypeInfo().IsInterface && !type.GetTypeInfo().IsClass)
                     {
-                        args = token.ToObject(classType); // This is expected to throw on some case
+                        args = token.ToObject(classType, options); // This is expected to throw on some case
                     }
                 }
             }
@@ -451,7 +451,7 @@ namespace Schema.NET
             return type;
         }
 
-        private static IList ReadJsonArray(JsonElement token, Type type, int? count = null)
+        private static IList ReadJsonArray(JsonElement token, Type type, int? count, JsonSerializerOptions options)
         {
             var classType = ToClass(type);
             var listType = typeof(List<>).MakeGenericType(type); // always read into list of interfaces
@@ -469,7 +469,7 @@ namespace Schema.NET
                 var typeName = GetTypeNameFromToken(childToken);
                 if (string.IsNullOrEmpty(typeName))
                 {
-                    var child = childToken.ToObject(classType);
+                    var child = childToken.ToObject(classType, options);
                     var method = listType.GetRuntimeMethod(nameof(List<object>.Add), new[] { classType });
 
                     if (method != null)
@@ -484,7 +484,7 @@ namespace Schema.NET
                     var builtType = Type.GetType($"{NamespacePrefix}{typeName}");
                     if (builtType != null && type.GetTypeInfo().IsAssignableFrom(builtType.GetTypeInfo()))
                     {
-                        var child = (Thing)childToken.ToObject(builtType);
+                        var child = (Thing)childToken.ToObject(builtType, options);
                         var method = listType.GetRuntimeMethod(nameof(List<object>.Add), new[] { classType });
 
                         if (method != null)
