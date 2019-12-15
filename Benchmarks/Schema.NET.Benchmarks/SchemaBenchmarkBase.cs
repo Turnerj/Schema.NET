@@ -1,9 +1,9 @@
 namespace Schema.NET.Benchmarks
 {
     using System;
+    using System.Text.Json;
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Jobs;
-    using Newtonsoft.Json;
 
     [KeepBenchmarkFiles]
     [MemoryDiagnoser]
@@ -26,7 +26,7 @@ namespace Schema.NET.Benchmarks
         public string Serialize() => this.Thing.ToString();
 
         [Benchmark]
-        public object Deserialize() => JsonConvert.DeserializeObject(this.SerializedThing, this.ThingType);
+        public object Deserialize() => JsonSerializer.Deserialize(this.SerializedThing, this.ThingType);
 
         protected void ConfigureBenchmark(Thing thing)
         {
