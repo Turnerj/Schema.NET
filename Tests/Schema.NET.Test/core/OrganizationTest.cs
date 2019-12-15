@@ -1,7 +1,7 @@
 namespace Schema.NET.Test
 {
     using System;
-    using System.Text.Json.Serialization;
+    using System.Text.Json;
     using Xunit;
 
     // https://developers.google.com/search/docs/data-types/corporate-contacts
@@ -61,14 +61,14 @@ namespace Schema.NET.Test
         [Fact]
         public void Deserializing_OrganizationJsonLd_ReturnsOrganization()
         {
-            Assert.Equal(this.organization.ToString(), JsonConvert.DeserializeObject<Organization>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
-            Assert.Equal(JsonConvert.SerializeObject(this.organization, TestDefaults.DefaultJsonSerializerSettings), JsonConvert.SerializeObject(JsonConvert.DeserializeObject<Organization>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
+            Assert.Equal(this.organization.ToString(), JsonSerializer.Deserialize<Organization>(this.json, TestDefaults.DefaultJsonSerializerSettings).ToString());
+            Assert.Equal(JsonSerializer.Serialize(this.organization, TestDefaults.DefaultJsonSerializerSettings), JsonSerializer.Serialize(JsonSerializer.Deserialize<Organization>(this.json, TestDefaults.DefaultJsonSerializerSettings), TestDefaults.DefaultJsonSerializerSettings));
         }
 
         [Fact]
         public void Deserializing_OrganizationJsonLd_WithHttpSchemaOrg_ReturnsOrganization() =>
             Assert.Equal(
                 this.organization.ToString().Replace("\"@context\":\"https://schema.org\"", "\"@context\":\"http://schema.org\"", StringComparison.Ordinal),
-                JsonConvert.DeserializeObject<Organization>(this.jsonHttp, TestDefaults.DefaultJsonSerializerSettings).ToString());
+                JsonSerializer.Deserialize<Organization>(this.jsonHttp, TestDefaults.DefaultJsonSerializerSettings).ToString());
     }
 }
