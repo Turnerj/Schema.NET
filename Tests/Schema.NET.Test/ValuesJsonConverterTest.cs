@@ -2,7 +2,8 @@ namespace Schema.NET.Test
 {
     using System;
     using System.Linq;
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using Xunit;
 
     public class ValuesJsonConverterTest
@@ -413,11 +414,11 @@ namespace Schema.NET.Test
 
         private string SerializeObject<T>(T value)
             where T : IValues
-            => JsonConvert.SerializeObject(new TestModel<T> { Property = value });
+            => JsonSerializer.Serialize(new TestModel<T> { Property = value });
 
         private T DeserializeObject<T>(string json)
             where T : IValues
-            => JsonConvert.DeserializeObject<TestModel<T>>(json).Property;
+            => JsonSerializer.Deserialize<TestModel<T>>(json).Property;
 
         private class TestModel<T>
             where T : IValues
