@@ -3,68 +3,54 @@ namespace Schema.NET.Tool.Repositories
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using Schema.NET.Tool.Constants;
     using Schema.NET.Tool.Models;
 
-    public class SchemaPropertyJsonConverter : JsonConverter
+    public class SchemaPropertyJsonConverter : JsonConverter<List<SchemaObject>>
     {
-        public override bool CanConvert(Type objectType) => objectType == typeof(List<SchemaObject>);
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override List<SchemaObject> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader is null)
+            if (typeToConvert is null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(typeToConvert));
             }
 
-            if (objectType is null)
+            if (reader.TokenType == JsonTokenType.StartObject)
             {
-                throw new ArgumentNullException(nameof(objectType));
-            }
-
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
-
-            if (reader.TokenType == JsonToken.StartObject)
-            {
-                var token = JToken.Load(reader);
-                var graphArray = ((JArray)token["@graph"]).ToList();
+                var token = JsonDocument.ParseValue(ref reader);
+                var graphArray = token.RootElement.GetProperty("@graph").EnumerateArray();
                 return graphArray.Select(Read).Where(x => x != null).ToList();
             }
 
-            return Enumerable.Empty<SchemaObject>();
+            return new List<SchemaObject>();
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) =>
+        public override void Write(Utf8JsonWriter writer, List<SchemaObject> value, JsonSerializerOptions options) =>
             throw new NotImplementedException();
 
-        private static SchemaObject Read(JToken token)
+        private static SchemaObject Read(JsonElement token)
         {
-            var commentToken = token["rdfs:comment"];
-            if (commentToken is null)
+            if (!token.TryGetProperty("rdfs:comment", out var commentToken))
             {
                 return null;
             }
 
-            var supercededByToken = token["http://schema.org/supersededBy"];
-            if (supercededByToken != null)
+            if (token.TryGetProperty("http://schema.org/supersededBy", out var supercededByToken))
             {
                 // Ignore deprecated properties.
                 return null;
             }
 
-            var id = new Uri(token["@id"].Value<string>());
-            var types = GetTokenValues(token["@type"]).ToList();
-            var comment = token["rdfs:comment"].Value<string>();
+            var id = new Uri(token.GetProperty("@id").GetString());
+            var types = GetTokenValues(token, "@type").ToList();
+            var comment = commentToken.GetString();
             var label = GetLabel(token);
-            var domainIncludes = GetTokenValues(token["http://schema.org/domainIncludes"], "@id").ToList();
-            var rangeIncludes = GetTokenValues(token["http://schema.org/rangeIncludes"], "@id").ToList();
-            var subClassOf = GetTokenValues(token["rdfs:subClassOf"], "@id").ToList();
-            var isPartOf = GetTokenValues(token["http://schema.org/isPartOf"]).FirstOrDefault();
+            var domainIncludes = GetTokenValues(token, "http://schema.org/domainIncludes", "@id").ToList();
+            var rangeIncludes = GetTokenValues(token, "http://schema.org/rangeIncludes", "@id").ToList();
+            var subClassOf = GetTokenValues(token, "rdfs:subClassOf", "@id").ToList();
+            var isPartOf = GetTokenValues(token, "http://schema.org/isPartOf").FirstOrDefault();
             var layer = isPartOf is null ?
                 LayerName.Core :
                 isPartOf.Replace("http://", string.Empty, StringComparison.Ordinal).Replace(".schema.org", string.Empty, StringComparison.Ordinal);
@@ -110,49 +96,49 @@ namespace Schema.NET.Tool.Repositories
             }
         }
 
-        private static string GetLabel(JToken token)
+        private static string GetLabel(JsonElement token)
         {
-            var labelToken = token["rdfs:label"];
+            var labelToken = token.GetProperty("rdfs:label");
 
-            if (labelToken.Type == JTokenType.String)
+            if (labelToken.ValueKind == JsonValueKind.String)
             {
-                return labelToken.Value<string>();
+                return labelToken.GetString();
             }
 
-            return labelToken["@value"].Value<string>();
+            return labelToken.GetProperty("@value").GetString();
         }
 
-        private static IEnumerable<string> GetTokenValues(JToken token)
+        private static IEnumerable<string> GetTokenValues(JsonElement source, string property)
         {
-            if (token != null)
+            if (source.TryGetProperty(property, out var token))
             {
-                if (token.Type == JTokenType.String)
+                if (token.ValueKind == JsonValueKind.String)
                 {
-                    yield return token.Value<string>();
+                    yield return token.GetString();
                 }
-                else if (token.Type == JTokenType.Array)
+                else if (token.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var subToken in (JArray)token)
+                    foreach (var subToken in token.EnumerateArray())
                     {
-                        yield return subToken.Value<string>();
+                        yield return subToken.GetString();
                     }
                 }
             }
         }
 
-        private static IEnumerable<Uri> GetTokenValues(JToken token, string name)
+        private static IEnumerable<Uri> GetTokenValues(JsonElement source, string property, string name)
         {
-            if (token != null)
+            if (source.TryGetProperty(property, out var token))
             {
-                if (token.Type == JTokenType.Object)
+                if (token.ValueKind == JsonValueKind.Object)
                 {
-                    yield return new Uri(token[name].Value<string>());
+                    yield return new Uri(token.GetProperty(name).GetString());
                 }
-                else if (token.Type == JTokenType.Array)
+                else if (token.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var subToken in (JArray)token)
+                    foreach (var subToken in token.EnumerateArray())
                     {
-                        yield return new Uri(subToken[name].Value<string>());
+                        yield return new Uri(subToken.GetProperty(name).GetString());
                     }
                 }
             }

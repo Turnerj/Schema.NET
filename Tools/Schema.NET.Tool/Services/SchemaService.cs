@@ -221,6 +221,12 @@ namespace Schema.NET.Tool.Services
                 Layer = schemaClass.Layer,
                 Name = schemaClass.Label,
             };
+
+            if (char.IsDigit(@class.Name[0]))
+            {
+                @class.Name = "_" + @class.Name;
+            }
+
             @class.Parents.AddRange(schemaClasses
                 .Where(x => schemaClass.SubClassOfIds.Contains(x.Id))
                 .Select(x => new Class() { Id = x.Id }));

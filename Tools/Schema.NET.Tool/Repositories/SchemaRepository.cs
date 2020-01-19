@@ -4,9 +4,9 @@ namespace Schema.NET.Tool.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
     using Schema.NET.Tool.Models;
 
     public class SchemaRepository : Disposable, ISchemaRepository
@@ -82,17 +82,14 @@ namespace Schema.NET.Tool.Repositories
 
         protected override void DisposeManaged() => this.httpClient.Dispose();
 
-        private static T Deserialize<T>(string json, JsonConverter converter) =>
-            JsonConvert.DeserializeObject<T>(
-                json,
-                converter);
+        private static T Deserialize<T>(string json, JsonConverter converter)
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(converter);
+            return JsonSerializer.Deserialize<T>(json, options);
+        }
 
         private static T Deserialize<T>(string json) =>
-            JsonConvert.DeserializeObject<T>(
-                json,
-                new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                });
+            JsonSerializer.Deserialize<T>(json);
     }
 }

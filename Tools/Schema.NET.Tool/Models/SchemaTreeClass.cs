@@ -1,31 +1,29 @@
-﻿namespace Schema.NET.Tool.Models
+namespace Schema.NET.Tool.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using System.Text.Json.Serialization;
 
-    [DataContract]
     public class SchemaTreeClass
     {
-        [DataMember]
-        public List<SchemaTreeClass> Children { get; set; } = new List<SchemaTreeClass>();
+#pragma warning disable CA2227 // Collection properties should be read only
+        public List<SchemaTreeClass> Children { get; set; }// = new List<SchemaTreeClass>();
+#pragma warning restore CA2227 // Collection properties should be read only
 
-        [DataMember]
         public string Description { get; set; }
 
-        [DataMember(Name = "@id")]
+        [JsonPropertyName("@id")]
         public Uri Id { get; set; }
 
-        [DataMember]
         public string Layer { get; set; }
 
-        [DataMember]
         public string Name { get; set; }
 
-        [DataMember(Name = "rdfs:subClassOf")]
+        [JsonPropertyName("rdfs:subClassOf")]
         public string SubClassOf { get; set; }
 
-        [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
         public string Type { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace Schema.NET.Tool.ViewModels
             var modifier = isVirtual ? " virtual" : string.Empty;
             modifier = isOverride ? " override" : modifier;
 
-            stringBuilder.AppendIndentLine(indent, $"[DataMember(Name = \"{this.JsonName}\", Order = {this.Order})]");
+            stringBuilder.AppendIndentLine(indent, $"[JsonPropertyName(\"{this.JsonName}\")]");
 
             if (this.Types.Any(x => string.Equals(x.Name, "Duration", StringComparison.OrdinalIgnoreCase)))
             {
