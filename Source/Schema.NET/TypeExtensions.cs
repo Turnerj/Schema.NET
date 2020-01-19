@@ -14,14 +14,14 @@ namespace Schema.NET
         /// <param name="type">The type.</param>
         /// <returns><c>true</c> if the specified type is nullable; otherwise, <c>false</c>.</returns>
         public static bool IsNullable(this Type type) =>
-            type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
         /// Determines whether the type is a primitive type.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns><c>true</c> if the type is a primitive type; otherwise, <c>false</c>.</returns>
-        public static bool IsPrimitiveType(this Type type) => type.GetTypeInfo().IsPrimitive || type == typeof(string);
+        public static bool IsPrimitiveType(this Type type) => type.IsPrimitive || type == typeof(string);
 
         /// <summary>
         /// Gets the underlying type from the potentially nullable type.

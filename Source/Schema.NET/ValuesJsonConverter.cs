@@ -7,26 +7,26 @@ namespace Schema.NET
     using System.Globalization;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Xml;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Converts a <see cref="IValues"/> object to and from JSON.
     /// </summary>
     /// <seealso cref="JsonConverter" />
-    public class ValuesJsonConverter : JsonConverter
+    public class ValuesJsonConverter : JsonConverter<IValues>
     {
-        private static readonly TypeInfo ThingInterfaceTypeInfo = typeof(IThing).GetTypeInfo();
+        private static readonly Type ThingInterfaceType = typeof(IThing);
         private static readonly Dictionary<string, Type> BuiltInThingTypeLookup = new Dictionary<string, Type>(StringComparer.Ordinal);
+        private static readonly HashSet<Type> NumericTypes = new HashSet<Type> { typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(decimal) };
 
         static ValuesJsonConverter()
         {
-            var thisAssembly = ThingInterfaceTypeInfo.Assembly;
+            var thisAssembly = ThingInterfaceType.Assembly;
             foreach (var type in thisAssembly.ExportedTypes)
             {
-                var typeInfo = type.GetTypeInfo();
-                if (typeInfo.IsClass && ThingInterfaceTypeInfo.IsAssignableFrom(typeInfo))
+                if (type.IsClass && ThingInterfaceType.IsAssignableFrom(type))
                 {
                     BuiltInThingTypeLookup.Add(type.Name, type);
                 }
@@ -36,69 +36,59 @@ namespace Schema.NET
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
-        /// <param name="objectType">Type of the object.</param>
+        /// <param name="typeToConvert">Type of the object.</param>
         /// <returns>
         /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvert(Type objectType) => objectType == typeof(IValues);
+        public override bool CanConvert(Type typeToConvert) => typeof(IValues).IsAssignableFrom(typeToConvert);
 
         /// <summary>
         /// Reads the JSON representation of the object.
         /// </summary>
-        /// <param name="reader">The <see cref="JsonReader"/> to read from.</param>
-        /// <param name="objectType">Type of the object.</param>
-        /// <param name="existingValue">The existing value of object being read.</param>
-        /// <param name="serializer">The calling serializer.</param>
+        /// <param name="reader">The <see cref="Utf8JsonReader"/> to read from.</param>
+        /// <param name="typeToConvert">Type of the object.</param>
+        /// <param name="options">The serializer options.</param>
         /// <returns>The object value.</returns>
-        public override object ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object existingValue,
-            JsonSerializer serializer)
+        public override IValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader is null)
+            if (typeToConvert is null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(typeToConvert));
             }
 
-            if (objectType is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(objectType));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
+            var dynamicConstructor = FastActivator.GetDynamicConstructor<IEnumerable<object>>(typeToConvert);
 
-            var dynamicConstructor = FastActivator.GetDynamicConstructor<IEnumerable<object>>(objectType);
-
-            if (reader.TokenType == JsonToken.StartArray)
+            if (reader.TokenType == JsonTokenType.StartArray)
             {
                 var items = new List<object>();
 
                 while (reader.Read())
                 {
-                    if (reader.TokenType == JsonToken.EndArray)
+                    if (reader.TokenType == JsonTokenType.EndArray)
                     {
                         break;
                     }
 
-                    if (reader.TokenType == JsonToken.Null)
+                    if (reader.TokenType == JsonTokenType.Null)
                     {
                         continue;
                     }
 
-                    var item = ProcessToken(reader, objectType.GenericTypeArguments, serializer);
+                    var item = ProcessToken(ref reader, typeToConvert.GenericTypeArguments, options);
                     items.Add(item);
                 }
 
-                return dynamicConstructor(items);
+                return dynamicConstructor(items) as IValues;
             }
-            else if (reader.TokenType != JsonToken.Null)
+            else if (reader.TokenType != JsonTokenType.Null)
             {
-                var item = ProcessToken(reader, objectType.GenericTypeArguments, serializer);
-                return dynamicConstructor(new[] { item });
+                var item = ProcessToken(ref reader, typeToConvert.GenericTypeArguments, options);
+                return dynamicConstructor(new[] { item }) as IValues;
             }
 
             return default;
@@ -109,8 +99,8 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The <see cref="IValues"/> object.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public override void Write(Utf8JsonWriter writer, IValues value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
@@ -122,28 +112,27 @@ namespace Schema.NET
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            var values = (IValues)value;
-            if (values.Count == 0)
+            if (value.Count == 0)
             {
-                serializer.Serialize(writer, null);
+                writer.WriteNullValue();
             }
-            else if (values.Count == 1)
+            else if (value.Count == 1)
             {
-                var enumerator = values.GetEnumerator();
+                var enumerator = value.GetEnumerator();
                 enumerator.MoveNext();
-                this.WriteObject(writer, enumerator.Current, serializer);
+                this.WriteObject(writer, enumerator.Current, options);
             }
             else
             {
                 writer.WriteStartArray();
-                foreach (var item in values)
+                foreach (var item in value)
                 {
-                    this.WriteObject(writer, item, serializer);
+                    this.WriteObject(writer, item, options);
                 }
 
                 writer.WriteEndArray();
@@ -155,39 +144,40 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The value to write.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public virtual void WriteObject(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public virtual void WriteObject(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            serializer.Serialize(writer, value);
+            JsonSerializer.Serialize(writer, value, value?.GetType(), options);
         }
 
-        private static object ProcessToken(JsonReader reader, Type[] targetTypes, JsonSerializer serializer)
+        private static object ProcessToken(ref Utf8JsonReader reader, Type[] targetTypes, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonToken.StartObject)
+            if (reader.TokenType == JsonTokenType.StartObject)
             {
-                var token = JToken.ReadFrom(reader);
+                var token = JsonDocument.ParseValue(ref reader).RootElement;
 
                 // Use the type property (if provided) to identify the correct type
-                var explicitTypeFromToken = token.SelectToken("@type")?.ToString();
-                if (!string.IsNullOrEmpty(explicitTypeFromToken) && TryGetConcreteType(explicitTypeFromToken, out var explicitType))
+                if (token.TryGetProperty("@type", out var typeElement) && typeElement.ValueKind == JsonValueKind.String)
                 {
-                    var explicitTypeInfo = explicitType.GetTypeInfo();
-                    for (var i = 0; i < targetTypes.Length; i++)
+                    var explicitTypeFromToken = typeElement.GetString();
+                    if (TryGetConcreteType(explicitTypeFromToken, out var explicitType))
                     {
-                        var targetTypeInfo = targetTypes[i].GetTypeInfo();
-                        if (targetTypeInfo.IsAssignableFrom(explicitTypeInfo))
+                        for (var i = 0; i < targetTypes.Length; i++)
                         {
-                            return token.ToObject(explicitType, serializer);
+                            if (targetTypes[i].IsAssignableFrom(explicitType))
+                            {
+                                return token.ToObject(explicitType, options);
+                            }
                         }
                     }
                 }
@@ -202,13 +192,12 @@ namespace Schema.NET
                         {
                             // If the target is an interface, attempt to identify concrete target
                             var localTargetType = underlyingTargetType;
-                            var typeInfo = localTargetType.GetTypeInfo();
-                            if (typeInfo.IsInterface && TryGetConcreteType(typeInfo.Name.Substring(1), out var concreteType))
+                            if (localTargetType.IsInterface && TryGetConcreteType(localTargetType.Name.Substring(1), out var concreteType))
                             {
                                 localTargetType = concreteType;
                             }
 
-                            return token.ToObject(localTargetType, serializer);
+                            return token.ToObject(localTargetType, options);
                         }
 #pragma warning disable CA1031 // Do not catch general exception types
                         catch (Exception ex)
@@ -225,7 +214,7 @@ namespace Schema.NET
                 for (var i = targetTypes.Length - 1; i >= 0; i--)
                 {
                     var underlyingTargetType = targetTypes[i].GetUnderlyingTypeFromNullable();
-                    if (TryProcessTokenAsType(reader, underlyingTargetType, out var value))
+                    if (TryProcessTokenAsType(ref reader, underlyingTargetType, out var value))
                     {
                         return value;
                     }
@@ -235,20 +224,15 @@ namespace Schema.NET
             return null;
         }
 
-        private static bool TryProcessTokenAsType(JsonReader reader, Type targetType, out object value)
+        private static bool TryProcessTokenAsType(ref Utf8JsonReader reader, Type targetType, out object value)
         {
             var success = false;
             object result = null;
 
             var tokenType = reader.TokenType;
-            if (reader.ValueType == targetType)
+            if (tokenType == JsonTokenType.String)
             {
-                result = reader.Value;
-                success = true;
-            }
-            else if (tokenType == JsonToken.String)
-            {
-                var valueString = (string)reader.Value;
+                var valueString = reader.GetString();
                 if (targetType.GetTypeInfo().IsPrimitive)
                 {
                     if (targetType == typeof(int))
@@ -359,24 +343,20 @@ namespace Schema.NET
                     result = localResult;
                 }
             }
-            else if (tokenType == JsonToken.Integer || tokenType == JsonToken.Float)
+            else if (tokenType == JsonTokenType.Number)
             {
-                if (targetType.GetTypeInfo().IsPrimitive || targetType == typeof(decimal))
+                if (NumericTypes.Contains(targetType))
                 {
-                    result = Convert.ChangeType(reader.Value, targetType, CultureInfo.InvariantCulture);
+                    var decimalValue = reader.GetDecimal();
+                    result = Convert.ChangeType(decimalValue, targetType, CultureInfo.InvariantCulture);
                     success = true;
                 }
             }
-            else if (tokenType == JsonToken.Date)
+            else if (tokenType == JsonTokenType.True || tokenType == JsonTokenType.False)
             {
-                if (targetType == typeof(DateTime) && reader.Value is DateTimeOffset dateTimeOffset)
+                if (targetType == typeof(bool))
                 {
-                    result = dateTimeOffset.UtcDateTime;
-                    success = true;
-                }
-                else if (targetType == typeof(DateTimeOffset) && reader.Value is DateTime dateTime)
-                {
-                    result = new DateTimeOffset(dateTime);
+                    result = reader.GetBoolean();
                     success = true;
                 }
             }
@@ -396,7 +376,7 @@ namespace Schema.NET
                 try
                 {
                     var localType = Type.GetType(typeName, false);
-                    if (ThingInterfaceTypeInfo.IsAssignableFrom(localType.GetTypeInfo()))
+                    if (ThingInterfaceType.IsAssignableFrom(localType.GetTypeInfo()))
                     {
                         type = localType;
                         return !(type is null);

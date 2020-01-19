@@ -1,9 +1,10 @@
 namespace Schema.NET
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// The most generic type of item.
@@ -15,30 +16,33 @@ namespace Schema.NET
         /// <summary>
         /// Default serializer settings used.
         /// </summary>
-        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
-        {
-            Converters = new List<JsonConverter>()
-            {
-                new StringEnumConverter(),
-            },
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-        };
+        private static readonly JsonSerializerOptions SerializerSettings;
 
         /// <summary>
         /// Serializer settings used when trying to avoid XSS vulnerabilities where user-supplied data is used
         /// and the output of the serialization is embedded into a web page raw.
         /// </summary>
-        private static readonly JsonSerializerSettings HtmlEscapedSerializerSettings = new JsonSerializerSettings()
+        private static readonly JsonSerializerOptions HtmlEscapedSerializerSettings;
+
+#pragma warning disable CA1810 // Initialize reference type static fields inline - required to add custom Converter
+        static Thing()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
-            Converters = new List<JsonConverter>()
+            var stringEnumConverter = new JsonStringEnumConverter();
+
+            SerializerSettings = new JsonSerializerOptions
             {
-                new StringEnumConverter(),
-            },
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-            StringEscapeHandling = StringEscapeHandling.EscapeHtml,
-        };
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                IgnoreNullValues = true,
+            };
+            SerializerSettings.Converters.Add(stringEnumConverter);
+
+            HtmlEscapedSerializerSettings = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true,
+            };
+            HtmlEscapedSerializerSettings.Converters.Add(stringEnumConverter);
+        }
 
         /// <summary>
         /// Returns the JSON-LD representation of this instance.
@@ -61,25 +65,20 @@ namespace Schema.NET
         public string ToHtmlEscapedString() => this.ToString(HtmlEscapedSerializerSettings);
 
         /// <summary>
-        /// Returns the JSON-LD representation of this instance using the <see cref="JsonSerializerSettings"/> provided.
-        ///
-        /// Caution: You should ensure your <paramref name="serializerSettings"/> has
-        /// <see cref="JsonSerializerSettings.StringEscapeHandling"/> set to <see cref="StringEscapeHandling.EscapeHtml"/>
-        /// if you plan to embed the output using @Html.Raw anywhere in a web page, else you open yourself up a possible
-        /// Cross-Site Scripting (XSS) attack if untrusted data is set on any of this object's properties.
+        /// Returns the JSON-LD representation of this instance using the <see cref="JsonSerializerOptions"/> provided.
         /// </summary>
         /// <param name="serializerSettings">Serialization settings.</param>
         /// <returns>
         /// A <see cref="string" /> that represents the JSON-LD representation of this instance.
         /// </returns>
-        public string ToString(JsonSerializerSettings serializerSettings) =>
-            RemoveAllButFirstContext(JsonConvert.SerializeObject(this, serializerSettings));
+        public string ToString(JsonSerializerOptions serializerSettings) =>
+            RemoveAllButRootContext(JsonSerializer.Serialize(this, this.GetType(), serializerSettings));
 
-        private static string RemoveAllButFirstContext(string json)
+        private static string RemoveAllButRootContext(string json)
         {
             var stringBuilder = new StringBuilder(json);
-            var startIndex = ContextPropertyJson.Length + 1; // We add the one to represent the opening curly brace.
-            stringBuilder.Replace(ContextPropertyJson, string.Empty, startIndex, stringBuilder.Length - startIndex);
+            var lastIndex = json.LastIndexOf(ContextPropertyJson, StringComparison.OrdinalIgnoreCase);
+            stringBuilder.Replace(ContextPropertyJson, string.Empty, 0, lastIndex);
             return stringBuilder.ToString();
         }
     }

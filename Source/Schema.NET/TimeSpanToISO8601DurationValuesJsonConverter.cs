@@ -1,14 +1,13 @@
 namespace Schema.NET
 {
     using System;
+    using System.Text.Json;
     using System.Xml;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Converts an <see cref="IValues"/> object to JSON. If the <see cref="IValues"/> contains a
     /// <see cref="TimeSpan"/>, converts it to ISO 8601 format first.
     /// </summary>
-    /// <seealso cref="JsonConverter" />
     /// <seealso cref="ValuesJsonConverter" />
     public class TimeSpanToISO8601DurationValuesJsonConverter : ValuesJsonConverter
     {
@@ -17,8 +16,8 @@ namespace Schema.NET
         /// </summary>
         /// <param name="writer">The JSON writer.</param>
         /// <param name="value">The value to write.</param>
-        /// <param name="serializer">The JSON serializer.</param>
-        public override void WriteObject(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <param name="options">The JSON serializer options.</param>
+        public override void WriteObject(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
@@ -30,18 +29,18 @@ namespace Schema.NET
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
             if (value is TimeSpan duration)
             {
-                writer.WriteValue(XmlConvert.ToString(duration));
+                writer.WriteStringValue(XmlConvert.ToString(duration));
             }
             else
             {
-                base.WriteObject(writer, value, serializer);
+                base.WriteObject(writer, value, options);
             }
         }
     }

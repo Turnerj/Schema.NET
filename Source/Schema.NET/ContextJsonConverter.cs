@@ -1,62 +1,53 @@
 namespace Schema.NET
 {
     using System;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Converts a <see cref="JsonLdContext"/> object to and from JSON.
     /// </summary>
-    /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ContextJsonConverter : JsonConverter<JsonLdContext>
     {
         /// <inheritdoc />
-        public override JsonLdContext ReadJson(JsonReader reader, Type objectType, JsonLdContext existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override JsonLdContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader is null)
+            if (typeToConvert is null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException(nameof(typeToConvert));
             }
 
-            if (objectType is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(objectType));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
+            var context = new JsonLdContext();
 
-            var context = hasExistingValue ? existingValue : new JsonLdContext();
-
-            string name;
-            string language;
-            if (reader.TokenType == JsonToken.String)
+            if (reader.TokenType == JsonTokenType.String)
             {
-                name = (string)reader.Value;
-                language = null;
+                context.Name = reader.GetString();
             }
             else
             {
-                var o = JObject.Load(reader);
+                var o = JsonDocument.ParseValue(ref reader);
 
-                var nameProperty = o.Property("name", StringComparison.OrdinalIgnoreCase);
-                name = nameProperty?.Value?.ToString() ?? "http://schema.org";
+                if (o.RootElement.TryGetProperty("name", out var nameElement))
+                {
+                    context.Name = nameElement.GetString() ?? "http://schema.org";
+                }
 
-                var languageProperty = o.Property("@language", StringComparison.OrdinalIgnoreCase);
-                language = languageProperty?.Value?.ToString();
+                if (o.RootElement.TryGetProperty("@language", out var languageElement))
+                {
+                    context.Language = languageElement.GetString();
+                }
             }
 
-#pragma warning disable CA1062 // Validate arguments of public methods
-            context.Name = name;
-#pragma warning restore CA1062 // Validate arguments of public methods
-            context.Language = language;
             return context;
         }
 
         /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, JsonLdContext value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, JsonLdContext value, JsonSerializerOptions options)
         {
             if (writer is null)
             {
@@ -68,22 +59,20 @@ namespace Schema.NET
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (serializer is null)
+            if (options is null)
             {
-                throw new ArgumentNullException(nameof(serializer));
+                throw new ArgumentNullException(nameof(options));
             }
 
             if (string.IsNullOrWhiteSpace(value.Language))
             {
-                writer.WriteValue(value.Name);
+                writer.WriteStringValue(value.Name);
             }
             else
             {
                 writer.WriteStartObject();
-                writer.WritePropertyName("name");
-                writer.WriteValue(value.Name);
-                writer.WritePropertyName("@language");
-                writer.WriteValue(value.Language);
+                writer.WriteString("name", value.Name);
+                writer.WriteString("@language", value.Language);
                 writer.WriteEndObject();
             }
         }
